@@ -1,0 +1,104 @@
+# 动态数组
+
++ 插入操作：O(n)
++ 移除操作：O(n)
++ 修改操作：如果已知待修改元素索引 O(1)，否则 O(n)
++ 查询操作，同修改    
++ addLast: O(1) 均摊复杂度
++ addFirst: O(n)
++ removeLast: O(1) 均摊复杂度
++ removeFirst: O(n)
+
+假设 capacity = n, n+1 次 addLast，触发 resize，总共进行了 2n+1 次基本操作（n+1 次插入，
+n 次的 resize 中的数据搬移），平均每次 addLast 操作，进行 2 次基本操作。   
+
+因此，可以认为 addLast 和 removeLast 的均摊复杂度为 O(1)。   
+
+复杂度震荡。   
+
+# 栈
+
+LIFO, Last In First Out。    
+
+Stack&lt;E&gt;   
+
++ void push(E)  O(1) 均摊复杂度
++ E pop()    O(1)  均摊复杂度
++ E peek()   O(1)
++ int getSize()   O(1)
++ boolean isEmpty()  O(1)  
+
+栈的底层有多种实现方式。上面的复杂度都是针对数组栈的底层实现。   
+
+# 队列
+
+FIFO, First In First Out。    
+
+Queue&lt;E&gt;   
+
++ void enqueue(E)   O(1) 均摊复杂度
++ E dequeue()   O(n)
++ E getFront()  O(1)
++ int getSize()  O(1)
++ bool isEmpty() O(1)  
+
+对于队列，我们只对队首的元素感兴趣。    
+
+复杂度均为数组队列实现。   
+
+与栈相同，队列的底层也有多种实现方式，所以我们把队列和栈都定义成了接口，而不是独立的结构。
+我们只关注队列和栈应该实现哪些操作，而不关注其底层是数组还是链表实现的等等。   
+
+# 循环队列
+
+数组队列的问题是，每次出队的时间复杂度都是 O(n)。这是不可接受的。   
+
+因此，我们可以换种想法，在队列中添加两个指针，front 和 tail，front 指向队首元素，
+tail 指向队尾的下一个元素。那么这样我们在出队时，只是去移动 front 指针，而不是真的去
+从数组首部移除元素，那么这个时间复杂度就又会下降到 O(1).    
+
+![circular-queue](https://github.com/temple-deng/markdown-images/blob/master/other/circular-queue.png)    
+
+这里我们在 tail 到达数组尾部的时候，重新指向队首部分已经出队的元素，同时假设 tail + 1 = front
+时，队列为满。这样当 front=tail 的时候，就只有在队列为空的时候。    
+
+说实话，这里取余的操作还是有点不理解。    
+
+根据性能测试的结果，如果是单纯入队的操作，循环队列的性能并不比数组队列更好，甚至在测试时，
+是一直要比数组队列差的，但是加入了出队操作后，循环队列的性能要明显优于数组队列。   
+
+但是奇怪的是，在视频中的用例中，这种差距是上百倍的，但自己的电脑上也就个位数倍的差距。   
+
+LoopQueue&lt;E&gt;   
+
++ void enqueue(E)   O(1)
++ E dequeue()   O(1)
++ E getFront()  O(1)
++ int getSize()  O(1)
++ bool isEmpty() O(1)  
+
+# 链表
+
++ 数据存储在“节点”中
++ 优点：真正的动态，不需要处理固定容量的问题
++ 缺点：丧失了随机访问的能力    
+
+在只保留头指针的情况下，很多链表的操作，都要针对在头结点和其他节点的操作进行分情况讨论，
+究其原因是头结点前没有节点了，因此，我们可以手动添加一个虚拟节点，来简化我们的代码。   
+
++ 添加操作：
+  - addFirst: O(1)
+  - addLast: O(n)
+  - insert: O(n)
++ 删除操作：
+  - removeFirst: O(1)
+  - removeLast: O(n)
+  - remove: O(n)
++ 修改操作 set: O(n)
++ 查找操作：
+  - get: O(n)
+  - contains: O(n)
+
+综合来看，链表的增删改查的操作的时间复杂度均为 O(n) 级别的，要比动态数组要查，但是需要
+注意的是在表头进行的查找，删除和添加操作时间复杂度都是 O(1)，因此，链表适合于只对表头
+进行操作的场景。    
