@@ -15,8 +15,15 @@ type LoopQueue struct {
 	size int
 }
 
-func (q *LoopQueue) Init(capacity int) error {
-	if capacity < 0 {
+func NewLoopQueue(capacities ...int) (*LoopQueue, error) {
+	capacity := capacities[0]
+	lq := LoopQueue{}
+	err := lq.init(capacity)
+	return &lq, err
+}
+
+func (q *LoopQueue) init(capacity int) error {
+	if capacity <= 0 {
 		return errors.New("Capacity cannot less than 0")
 	}
 

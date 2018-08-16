@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	q := &(queue.ArrayQueue{})
+	q, _ := queue.New(10)
 
 	for i := 0; i < 10; i++ {
 		q.Enqueue(i)
@@ -25,8 +25,7 @@ func main() {
 
 	var lq queue.Queue
 
-	lq = &(queue.LoopQueue{})
-	lq.Init(10)
+	lq, _ = queue.NewLoopQueue(10)
 
 	for i := 0; i < 11; i++ {
 		lq.Enqueue(i)

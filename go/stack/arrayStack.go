@@ -5,16 +5,15 @@ import (
 	"../myArray"
 )
 
-// 这个结构体使用的时候需要注意的是
-// 如果我们希望以实现 Stack 接口的形式使用这个结构体
-// 那么应该使用指向结构体的指针，因为指针接收者实现了 Stack 接口的所有方法
-// 如果不是通过接口的方式使用，那么其实通过指针还是普通的结构体区别不大
+// 以数组为底层实现的栈
 type ArrayStack struct {
-	array myArray.Array
+	array *myArray.Array
 }
 
-func (s *ArrayStack) Init(capacity int) error {
-	return s.array.Init(capacity)
+func New(capacities ...int) (*ArrayStack, error) {
+	capacity := capacities[0]
+	array, err := myArray.NewArray(capacity)
+	return &ArrayStack{array: array,}, err
 }
 
 func (s *ArrayStack) GetCapacity() int {

@@ -5,10 +5,7 @@
  */
 package stack
 
-// 理论上 Stack 接口是不需要实现 Init 方法的
-// 但是在 Go 中你要是不实现这个方法，你实现了的接口就无法创建一个栈结构啊
 type Stack interface {
-	Init(int) error
 	GetSize() int
 	IsEmpty() bool
 	Push(elem interface{})

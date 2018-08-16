@@ -2,16 +2,17 @@ package queue
 
 import (
 	"fmt"
-	// "fmt"
 	"../myArray"
 )
 
 type ArrayQueue struct {
-	data myArray.Array
+	data *myArray.Array
 }
 
-func (q *ArrayQueue) Init(capacity int) error {
-	return q.data.Init(capacity)
+func New(capacities ...int) (*ArrayQueue, error) {
+	capacity := capacities[0]
+	data, err := myArray.NewArray(capacity)
+	return &(ArrayQueue{data: data,}), err
 }
 
 func (q *ArrayQueue) GetSize() int {

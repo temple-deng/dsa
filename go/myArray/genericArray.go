@@ -1,5 +1,8 @@
 // 泛型顺序表的实现，可以装入任意的元素类型
 // 理论上好像没有什么问题
+// 这个包虽然把 MyArray 和 Array 都声明成可导出的，但是推荐使用 NewArray 的方法获取结构
+// 因为 init 方法并没有导出，所以不适用 New 方法形式，内部数组应该是无法初始化长度的
+// 会报错
 package myArray
 
 import (
@@ -12,9 +15,15 @@ type Array struct {
 	length int
 }
 
+func NewArray(capacities ...int) (*Array, error) {
+	arr := Array{}
+	capacity := capacities[0]
+	return &arr, arr.init(capacity)
+}
+
 // 初始化
-func (a *Array) Init(capacity int) (err error) {
-	if capacity < 0 {
+func (a *Array) init(capacity int) (err error) {
+	if capacity <= 0 {
 		return errors.New("Capacity cannot less than 0")
 	}
 	a.data = make([]interface{}, a.length, capacity)

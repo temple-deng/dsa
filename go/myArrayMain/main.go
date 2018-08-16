@@ -6,17 +6,19 @@ import (
 )
 
 func main() {
-	arr := myArray.MyArray{}
-	fmt.Printf("array length: %d,\t. capacity: %d\n", arr.GetLength(), arr.GetCapacity())   // should be 0 0
+	arr, _ := myArray.NewIntArray(10)
+	fmt.Printf("IntArray: length = %d, capacity = %d\n", arr.GetLength(), arr.GetCapacity())   // should be 0 10
 
-	fmt.Println(arr.IsEmpty())
+	fmt.Printf("array is empty?: %v\n", arr.IsEmpty())
 	
 	// init array
-	arr.Init(1)
 	arr.Insert(0, 1)
+	fmt.Printf("Insert 1 at index = 0; %s\n", arr)
 	arr.Insert(1, 5)
+	fmt.Printf("Insert 5 at index = 1; %s\n", arr)
 	arr.Insert(1, 3)
-	fmt.Println(arr)	// should be [1, 3, 5]
+	fmt.Printf("Insert 3 at index = 1; %s\n", arr)
+	fmt.Printf("Should be [1,3,5];  %s\n", arr)	// should be [1, 3, 5]
 
 	temp1, _ := arr.Get(1)
 	temp2, _ := arr.Get(2)
@@ -36,8 +38,7 @@ func main() {
 
 
 	fmt.Println("-------Generic Array--------")
-	garr := myArray.Array{}
-	garr.Init(20)
+	garr, _ := myArray.NewArray(20)
 	garr.Insert(0, 1)
 	garr.Insert(1, 2)
 	garr.Insert(2, "123")

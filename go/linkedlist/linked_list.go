@@ -10,6 +10,9 @@ type LinkedList struct {
 	size int
 }
 
+func New() *LinkedList {
+	return &LinkedList{}
+}
 
 func (l *LinkedList) GetSize() int {
 	return l.size
@@ -61,14 +64,12 @@ func (l *LinkedList) Remove(index int) (elem interface{}, err error) {
 	return
 }
 
-func (l *LinkedList) RemoveFirst() interface{} {
-	elem, _ := l.Remove(0)
-	return elem
+func (l *LinkedList) RemoveFirst() (interface{}, error) {
+	return l.Remove(0)
 }
 
-func (l *LinkedList) RemoveLast() interface{} {
-	elem, _ := l.Remove(l.size-1)
-	return elem
+func (l *LinkedList) RemoveLast() (interface{}, error) {
+	return l.Remove(l.size - 1)
 }
 
 func (l *LinkedList) Get(index int) (elem interface{}, err error) {
@@ -85,14 +86,12 @@ func (l *LinkedList) Get(index int) (elem interface{}, err error) {
 	return
 }
 
-func (l *LinkedList) GetFirst() interface{} {
-	elem, _ := l.Get(0)
-	return elem
+func (l *LinkedList) GetFirst() (interface{}, error) {
+	return l.Get(0)
 }
 
-func (l *LinkedList) GetLast() interface{} {
-	elem, _ := l.Get(l.size - 1)
-	return elem
+func (l *LinkedList) GetLast() (interface{}, error) {
+	return l.Get(l.size - 1)
 }
 
 func (l *LinkedList) Set(index int, elem interface{}) error {

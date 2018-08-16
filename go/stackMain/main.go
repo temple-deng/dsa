@@ -6,21 +6,20 @@ import (
 )
 
 func main() {
-	// var stk stack.Stack
-	// stk = &(stack.ArrayStack{})
-	// stk.Init(5)
-	// stk.Push(1)
-	// fmt.Println(stk)   // [1]
+	var stk stack.Stack
+	stk, _ = stack.New(10)
+	stk.Push(1)
+	fmt.Println(stk)   // [1]
 
-	// stk.Push(2)
-	// stk.Push(3)
-	// elem, _ := stk.Peek()   // 3
-	// fmt.Println(elem)
-	// fmt.Println(stk)    // [1, 2, 3]
+	stk.Push(2)
+	stk.Push(3)
+	elem, _ := stk.Peek()   // 3
+	fmt.Println(elem)
+	fmt.Println(stk)    // [1, 2, 3]
 	
-	// elem, _ = stk.Pop()    
-	// fmt.Println(elem)   // 3
-	// fmt.Println(stk)   // [1, 2]
+	elem, _ = stk.Pop()    
+	fmt.Println(elem)   // 3
+	fmt.Println(stk)   // [1, 2]
 
 	// valid parentheses
 	ok := validateParentheses("{[([])]}")
@@ -38,8 +37,7 @@ func validateParentheses(str string) bool {
 	runes := ([]rune)(str)
 	length := len(runes)
 	var s stack.Stack
-	s = &(stack.ArrayStack{})
-	s.Init(length)
+	s, _ = stack.New(length)
 
 	i := 0
 	Loop:

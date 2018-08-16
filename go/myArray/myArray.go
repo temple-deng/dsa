@@ -1,6 +1,5 @@
 /**
- * 顺序表的一种简单实现
- * 这种实现的问题是元素的类型被写死了，只能是 int 型
+ * int 型顺序表的一种简单实现
  * 另一个文件 genericArray.go 实现了泛型的顺序表，不过这里的泛型与其他语言中的泛型不一样
  * 因为 Go 本身不提供泛型的，因此我们只能用 interface{} 来实现泛型
  * 但这样的话，数组中的元素可能是不同类型的
@@ -12,15 +11,24 @@ import (
 	"strconv"
 )
 
+// 虽然结构体本身是导出的，但不推荐直接使用字面量生成
+// 尽量使用下面的 NewIntArray 函数
 type MyArray struct {
 	data []int
 	length int
 }
 
+// 返回一个整型动态数组，容量值应大于 0
+func NewIntArray(capacities ...int) (*MyArray, error) {
+	array := MyArray{}
+	capacity := capacities[0]
+	return &array, array.init(capacity)
+}
+
 // 初始化
-func (a *MyArray) Init(capacity int) (err error) {
-	if capacity < 0 {
-		return errors.New("Capacity cannot less than 0")
+func (a *MyArray) init(capacity int) (err error) {
+	if capacity <= 0 {
+		return errors.New("Capacity cannot less than or equals 0")
 	}
 	a.data = make([]int, a.length, capacity)
 	return
@@ -138,7 +146,7 @@ func (a *MyArray) RemoveFirst() (int, error) {
 // String 方法的接收者是结构体而不是指针
 // 因为如果最终定义为指针的接收者，那么是指针实现了 Stringer 接口
 // 而不是结构体
-func (a MyArray) String() string {
+func (a *MyArray) String() string {
 	str := "["
 	for i := 0; i < a.length - 1; i++ {
 		str += strconv.Itoa(a.data[i]) + ", "
