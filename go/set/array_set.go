@@ -6,11 +6,14 @@ import (
 )
 
 // 以数组为底层的集合的实现
+// 但是很遗憾这个实现其实并没有实现 Set 接口
+// 主要是在并交差、子集相等方面，一个 Set 接口并没有暴露出遍历元素的方法
+// 那我们就没办法实现这些操作，因为我们总归是要遍历第二个集合的
 type ArraySet struct {
 	data *myArray.Array
 }
 
-func New(capacities ...int) (*ArraySet, error) {
+func NewArraySet(capacities ...int) (*ArraySet, error) {
 	capacity := capacities[0]
 	data, err := myArray.NewArray(capacity)
 	return &ArraySet{data: data,}, err
@@ -58,7 +61,7 @@ func (s *ArraySet) Remove() (value interface{}, err error) {
 func (s *ArraySet) Union(set *ArraySet) *ArraySet {
 	cap1 := s.data.GetCapacity()
 	cap2 := s.data.GetCapacity()
-	newSet, _ := New(cap1 + cap2)
+	newSet, _ := NewArraySet(cap1 + cap2)
 	
 	// 注意这里使用内部方法 insertWithoutCheck
 	// 这样这个循环的复杂度就是 n * 2O(1) = O(n)
@@ -91,7 +94,7 @@ func (s *ArraySet) insertWithoutCheck(value interface{}) {
 func (s *ArraySet) Intersection(set *ArraySet) *ArraySet {
 	size1 := s.GetSize()
 	size2 := set.GetSize()
-	newSet, _ := New(size1 + size2)
+	newSet, _ := NewArraySet(size1 + size2)
 
 	// n * m = O(mn)
 	for i := 0; i < size1; i++ {
@@ -114,7 +117,7 @@ func (s *ArraySet) Difference(set *ArraySet) *ArraySet {
 	} else {
 		cap = size2
 	}
-	newSet, _ := New(cap)
+	newSet, _ := NewArraySet(cap)
 
 	for i := 0; i < size1; i++ {
 		value, _ := s.data.Get(i)

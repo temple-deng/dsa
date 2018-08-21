@@ -136,7 +136,7 @@ class BSTMap {
   removeMin(root) {
     if (root.left === null) {
       const right = root.right;
-      root = null;
+      root.right = null;
       this.size--;
       return right;
     }

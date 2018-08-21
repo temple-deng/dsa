@@ -11,7 +11,12 @@ type ArrayStack struct {
 }
 
 func New(capacities ...int) (*ArrayStack, error) {
-	capacity := capacities[0]
+	var capacity int
+	if len(capacities) == 0 {
+		capacity = 10
+	} else {
+		capacity = capacities[0]
+	}
 	array, err := myArray.NewArray(capacity)
 	return &ArrayStack{array: array,}, err
 }

@@ -16,8 +16,13 @@ type Array struct {
 }
 
 func NewArray(capacities ...int) (*Array, error) {
+	var capacity int
+	if len(capacities) == 0 {
+		capacity = 10
+	} else {
+		capacity = capacities[0]
+	}
 	arr := Array{}
-	capacity := capacities[0]
 	return &arr, arr.init(capacity)
 }
 

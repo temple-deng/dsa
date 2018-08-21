@@ -10,7 +10,12 @@ type ArrayQueue struct {
 }
 
 func New(capacities ...int) (*ArrayQueue, error) {
-	capacity := capacities[0]
+	var capacity int
+	if len(capacities) == 0 {
+		capacity = 10
+	} else {
+		capacity = capacities[0]
+	}
 	data, err := myArray.NewArray(capacity)
 	return &(ArrayQueue{data: data,}), err
 }

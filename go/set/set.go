@@ -9,4 +9,6 @@ type Set interface {
 	Contains(interface{}) bool
 	IsSubset(*Set) bool
 	IsEqual(*Set) bool
+	GetSize() int
+	IsEmpty() bool
 }

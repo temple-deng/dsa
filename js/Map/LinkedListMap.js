@@ -36,11 +36,14 @@ class LinkedListMap {
   }
 
   contains(key) {
-    return this.getNode(key) === null;
+    return this.getNode(key) !== null;
   }
 
   get(key) {
     const node = this.getNode(key);
+    // 这里其实并不严谨，如果我们对应 key 的值就是 null，那这里其实是无法区分的
+    // 但仔细想想虽然不严谨，但并不会出错，因为如果存在你查出来也是 null
+    // 和不存在的值没区别
     if (node === null) {
       return null;
     } else {

@@ -19,10 +19,29 @@ type MyArray struct {
 }
 
 // 返回一个整型动态数组，容量值应大于 0
-func NewIntArray(capacities ...int) (*MyArray, error) {
-	array := MyArray{}
-	capacity := capacities[0]
-	return &array, array.init(capacity)
+func NewIntArray(arg ...interface{}) (*MyArray, error) {
+	if len(arg) == 0 {
+		capacity := 10
+		array := MyArray{}
+		return &array, array.init(capacity)
+	}
+
+	switch v := arg[0].(type) {
+	case int:
+		capacity := v
+		array := MyArray{}
+		return &array, array.init(capacity)
+	case []int:
+		length := len(v)
+		data := make([]int, length, cap(v))
+		for i := 0; i < length; i++ {
+			data[i] = v[i]
+		}
+		array := MyArray{data: data, length: length,}
+		return &array, nil
+	default:
+		return nil, nil
+	}
 }
 
 // 初始化
