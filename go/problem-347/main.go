@@ -1,3 +1,5 @@
+// leetcode problem 347
+// Top K Frequent Elements
 package main
 
 import (
@@ -21,12 +23,13 @@ func topKFrequent(nums []int, k int) []int {
 			nodes = append(nodes,HeapNode{Num: index, Fre: value,})
 		}
 		heap := &Heap{data: nodes}
+		fmt.Println(heap.data)
 		length = len(nodes)
-		fmt.Println(length)
 		for lastIndex := (length-2)/2; lastIndex >= 0; lastIndex-- {
 			heap.SiftDown(lastIndex)
+			fmt.Println(heap.data)
 		}
-		fmt.Println(heap.data)
+		// fmt.Println(heap.data)
 		arr := []int{}
 		for i:=0; i < k; i++ {
 			arr = append(arr, heap.RemoveMax().Num)
@@ -110,7 +113,8 @@ func (h *Heap) SiftDown(index int) {
 		if curNode.Fre < h.data[maxIndex].Fre {
 			h.swap(curIndex, maxIndex)
 			curIndex = maxIndex
+		} else {
+			break
 		}
-		break
 	}
 }
