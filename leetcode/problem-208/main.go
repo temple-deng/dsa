@@ -1,3 +1,4 @@
+// implement Trie data structure
 package main
 
 import (
