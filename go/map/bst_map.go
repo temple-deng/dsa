@@ -1,3 +1,13 @@
+// 基于 BST 为底层实现的 Map 结构
+// 暴露的结构方法如下:
+// GetSize() int
+// IsEmpty() bool
+// Contains(string) bool
+// Get(string) int, bool
+// Set(string, int) error
+// Add(string, int)
+// Remove(string) int, bool
+// 这里的 Remove 的操作失败的结果以 error 类型返回会不会更好
 package selfmap
 
 import (
