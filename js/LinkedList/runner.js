@@ -1,4 +1,5 @@
-const LinkedList = require('./LinkedList');
+const LinkedList = require('./linkedList');
+const DoublyLinkedList = require('./doublyLinkedList');
 
 const ll = new LinkedList();
 
@@ -18,3 +19,6 @@ ll.removeFirst();
 console.log("RemoveFirst: %s", ll);
 ll.remove(4);
 console.log("Remove Index 4: %s", ll);
+
+console.log("-------------------------DoublyLinkedList-------------------");
+const dll = new DoublyLinkedList();

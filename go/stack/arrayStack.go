@@ -5,20 +5,17 @@ import (
 	"../myArray"
 )
 
-// 以数组为底层实现的栈
+// 以泛型数组为底层实现的栈
 type ArrayStack struct {
 	array *myArray.Array
 }
 
-func New(capacities ...int) (*ArrayStack, error) {
-	var capacity int
-	if len(capacities) == 0 {
-		capacity = 10
-	} else {
-		capacity = capacities[0]
+func New(arg ...interface{}) (*ArrayStack, error) {
+	if len(arg) == 0 {
+		arg = append(arg, 10)
 	}
-	array, err := myArray.NewArray(capacity)
-	return &ArrayStack{array: array,}, err
+	array, err := myArray.NewArray(arg[0])
+	return &ArrayStack{array}, err
 }
 
 func (s *ArrayStack) GetCapacity() int {
@@ -49,17 +46,15 @@ func (s *ArrayStack) Peek() (interface{}, error) {
 
 // 这里 String 方法尚未完成
 func (s *ArrayStack) String() string {
-	str := "Stack:\n"
-	str += "Top: "
+	str := "Stack Top: [ "
   size := s.GetSize()
-	for i := size - 1; i > 0; i-- {
+	for i := size - 1; i >= 0; i-- {
 		elem, _ := s.array.Get(i)
-		str += fmt.Sprint(elem) + ", "
-	}
-
-	if size != 0 {
-		elem, _ := s.array.Get(0)
 		str += fmt.Sprint(elem)
+		if i > 0 {
+			str += ", "
+		}
 	}
+	str += " ] Bottom"
 	return str
 }

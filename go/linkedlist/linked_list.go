@@ -11,6 +11,8 @@ type LinkedList struct {
 }
 
 func New() *LinkedList {
+	// 注意只有上面的 dummyHead 声明成结构体的时候才可以这样初始化
+	// 如果是指向 Node 的指针的话，就必须显示添加一个 Node 了
 	return &LinkedList{}
 }
 
@@ -27,13 +29,13 @@ func (l *LinkedList) Insert(index int, elem interface{}) error {
 		return errors.New("Index out of range")
 	}
 
-	current := &l.dummyHead
+	prev := &l.dummyHead
 	for i := 0; i < index; i++ {
-		current = current.next
+		prev = prev.next
 	}
 	node := Node{data: elem,}
-	node.next = current.next
-	current.next = &node
+	node.next = prev.next
+	prev.next = &node
 	l.size++
 	return nil
 }
@@ -78,8 +80,8 @@ func (l *LinkedList) Get(index int) (elem interface{}, err error) {
 		return
 	}
 
-	current := &l.dummyHead
-	for i := 0; i <= index; i++ {
+	current := l.dummyHead.next
+	for i := 0; i < index; i++ {
 		current = current.next
 	}
 	elem = current.data
@@ -99,8 +101,8 @@ func (l *LinkedList) Set(index int, elem interface{}) error {
 		return errors.New("Index out of range")
 	}
 
-	current := &l.dummyHead
-	for i := 0; i <= index; i++ {
+	current := l.dummyHead.next
+	for i := 0; i < index; i++ {
 		current = current.next
 	}
 	current.data = elem

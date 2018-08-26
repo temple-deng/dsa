@@ -46,9 +46,6 @@ func (q *LinkedListQueue) Dequeue() (elem interface{}, err error) {
 	elem = node.data
 	q.head = q.head.next
 	node = nil
-	if q.head == nil {
-		q.tail = nil
-	}
 	q.size--
 	return
 }
@@ -65,12 +62,12 @@ func (q *LinkedListQueue) GetFront() (elem interface{}, err error) {
 
 func (q *LinkedListQueue) String() string {
 	str := fmt.Sprintf("Linked List Queue: Size = %d\n", q.size)
-	str += "Front [ "
+	str += "Head [ "
 	
 	for current := q.head; current.next != nil; current = current.next {
 		str += fmt.Sprint(current.data) + ", "
 	}
 
-	str += fmt.Sprint(q.tail.data) + " ] "
+	str += fmt.Sprint(q.tail.data) + " ] Tail "
 	return str
 }

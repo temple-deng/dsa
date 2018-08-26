@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-	arr, _ := myArray.NewIntArray(10)
-	fmt.Printf("IntArray: length = %d, capacity = %d\n", arr.GetLength(), arr.GetCapacity())   // should be 0 10
+	arr, _ := myArray.NewIntArray(40)
+	fmt.Printf("IntArray: length = %d, capacity = %d\n", arr.GetLength(), arr.GetCapacity())   // should be 0 40
 
 	fmt.Printf("array is empty?: %v\n", arr.IsEmpty())
 	

@@ -15,15 +15,40 @@ type Array struct {
 	length int
 }
 
-func NewArray(capacities ...int) (*Array, error) {
-	var capacity int
-	if len(capacities) == 0 {
-		capacity = 10
-	} else {
-		capacity = capacities[0]
+func NewArray(arg ...interface{}) (*Array, error) {
+	if len(arg) == 0 {
+		capacity := 10
+		arr := &Array{}
+		return arr, arr.init(capacity)
 	}
-	arr := Array{}
-	return &arr, arr.init(capacity)
+
+	switch v := arg[0].(type) {
+	case int:
+		arr := &Array{}
+		return arr, arr.init(v)
+	case []interface{}:
+		length := len(v)
+		data := make([]interface{}, length, cap(v))
+
+		for i := 0; i < length; i++ {
+			data[i] = v[i]
+		}
+
+		arr := &Array{data: data, length: length,}
+		return arr, nil
+	case []int:
+		length := len(v)
+		data := make([]interface{}, length, cap(v))
+
+		for i := 0; i < length; i++ {
+			data[i] = v[i]
+		}
+
+		arr := &Array{data: data, length: length,}
+		return arr, nil
+	default:
+		return nil, nil
+	}
 }
 
 // 初始化
@@ -144,7 +169,7 @@ func (a *Array) RemoveFirst() (interface{}, error) {
 }
 
 func (a *Array) String() string {
-	str := "["
+	str := "[ "
 	for i := 0; i < a.length - 1; i++ {
 		str += fmt.Sprint(a.data[i]) + ", "
 	}
@@ -152,7 +177,7 @@ func (a *Array) String() string {
 	if a.length != 0 {
 		str += fmt.Sprint(a.data[a.length-1])
 	}
-	str += "]"
+	str += " ]"
 	return str
 }
 

@@ -1,7 +1,9 @@
-const Arr = require('../MyArray/MyArray');
+const Arr = require('../myArray/myArray');
 
+// 数组栈的实现
+// done
 class Stack {
-  constructor(capacity = 100) {
+  constructor(capacity) {
     this.data = new Arr(capacity);
   }
 
@@ -30,16 +32,16 @@ class Stack {
   }
 
   toString() {
-    let str = 'Stack:\n';
-    str += 'Top: ';
+    let str = 'Stack Top : [ ';
     const length = this.getLength();
-    for (let i = length - 1; i > 0 ; i--) {
-      str += this.data.get(i) + ', ';
+    for (let i = length - 1; i >= 0 ; i--) {
+      str += this.data.get(i);
+      if (i > 0) {
+        str += ', '
+      }
     }
 
-    if (length !== 0) {
-      str += this.data.get(0) + ' Bottom';
-    }
+    str += ' ] Bottom'
     return str;
   }
 }

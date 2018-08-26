@@ -25,6 +25,8 @@ class LinkedList {
     }
 
     let prev = this.dummyHead;
+    // 这样想：遍历完索引 i 后，prev 指向索引 i 的节点，因此当 i = index 退出循环时
+    // i 指向 index - 1 的节点
     for(let i = 0; i < index; i++) {
       prev = prev.next;
     }
@@ -56,7 +58,8 @@ class LinkedList {
     let node = prev.next;
     prev.next = node.next;
     const data = node.data;
-    node = null;
+    // 这里将 node 设置为 null 没什么作用吧，并且只是一个引用
+    node.next = null;
     this.size--;
     return data;
   }
@@ -66,7 +69,7 @@ class LinkedList {
   }
 
   removeLast() {
-    return this.remove(this.size-1);
+    return this.remove(this.size - 1);
   }
 
   get(index) {
@@ -75,6 +78,8 @@ class LinkedList {
     }
 
     let current = this.dummyHead.next;
+    // 这里就不一样了，当遍历完索引 i 后, current 指向了索引为 i + 1 元素
+    // 所以当循环终止时，current 指向了索引为 index 的节点
     for (let i = 0; i < index; i++) {
       current = current.next;
     }
@@ -106,11 +111,11 @@ class LinkedList {
   toString() {
     let str = `LinkedList: Size = ${this.size}\n`;
     let current = this.dummyHead.next;
-    while(current.next != null) {
+    while(current != null) {
       str += `${current.data} -> `;
       current = current.next;
     }
-    str += `${current.data} -> Null`;
+    str += 'Null';
     return str;
   }
 }

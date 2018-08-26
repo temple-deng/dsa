@@ -11,7 +11,7 @@ type LinkedListStack struct {
 }
 
 func New() *LinkedListStack {
-	return &LinkedListStack{data: linkedlist.New(),}
+	return &LinkedListStack{linkedlist.New()}
 }
 
 func (s *LinkedListStack) GetSize() int {

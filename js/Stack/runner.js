@@ -1,22 +1,41 @@
-const Stack = require('./stack');
+const Stack = require('./arrayStack');
+const llStack = require('./linkedListStack');
 
-const stack = new Stack(12);
+let stack = new Stack(12);
 
-console.log(stack.toString());   // 
+console.log("Current Stack: %s", stack);   // [] 
 
 stack.push(0);
 stack.push(1);
 stack.push(2);
 
-console.log(stack.toString());   // 2, 1, 0
+console.log("After pushing  0, 1, 2: %s", stack);   // [2, 1, 0]
 
-const elem = stack.pop();
+let elem = stack.pop();
 stack.push(100);
 
-console.log(elem);   // 2
-console.log(stack.toString())  // 100, 1, 0
+console.log("Pop top element, value is: %s", elem)
+console.log("After 1 pop and push 100: %s", stack);   // 2
 
-console.log(stack.peek()) // 100
+console.log("Current top Element is: %s", stack.peek()) // 100
+
+console.log("-------------------LinkedListStack-----------------------")
+stack = new llStack();
+console.log("Current Stack: %s", stack);   // [] 
+
+stack.push(0);
+stack.push(1);
+stack.push(2);
+
+console.log("After pushing  0, 1, 2: %s", stack);   // [2, 1, 0]
+
+elem = stack.pop();
+stack.push(100);
+
+console.log("Pop top element, value is: %s", elem)
+console.log("After 1 pop and push 100: %s", stack);   // 2
+
+console.log("Current top Element is: %s", stack.peek()) // 100
 
 
 /**

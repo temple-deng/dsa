@@ -14,11 +14,13 @@ import (
 // 虽然结构体本身是导出的，但不推荐直接使用字面量生成
 // 尽量使用下面的 NewIntArray 函数
 type MyArray struct {
-	data []int
-	length int
+	data    []int
+	length  int
 }
 
 // 返回一个整型动态数组，容量值应大于 0
+// 或者也可以用一个数组来进行数组元素的初始化
+// 注意这里所谓的数组都是指切片
 func NewIntArray(arg ...interface{}) (*MyArray, error) {
 	if len(arg) == 0 {
 		capacity := 10
@@ -49,7 +51,7 @@ func (a *MyArray) init(capacity int) (err error) {
 	if capacity <= 0 {
 		return errors.New("Capacity cannot less than or equals 0")
 	}
-	a.data = make([]int, a.length, capacity)
+	a.data = make([]int, 0, capacity)
 	return
 }
 
@@ -79,7 +81,7 @@ func (a *MyArray) AddFirst(elem int) (err error) {
 
 // 插入
 // 复杂度是 O(n/2) = O(n)
-func (a *MyArray) Insert(index int, elem int) (err error) {
+func (a *MyArray) Insert(index int, elem int) error {
 	// index 位置不合法
 	if index < 0 || index > a.length {
 		return errors.New("Index out of range")
@@ -95,7 +97,7 @@ func (a *MyArray) Insert(index int, elem int) (err error) {
 	}
 	a.data[index] = elem
 	a.length++
-	return
+	return nil
 }
 
 func (a *MyArray) Get(index int) (elem int, err error) {
@@ -166,7 +168,7 @@ func (a *MyArray) RemoveFirst() (int, error) {
 // 因为如果最终定义为指针的接收者，那么是指针实现了 Stringer 接口
 // 而不是结构体
 func (a *MyArray) String() string {
-	str := "["
+	str := "[ "
 	for i := 0; i < a.length - 1; i++ {
 		str += strconv.Itoa(a.data[i]) + ", "
 	}
@@ -174,7 +176,7 @@ func (a *MyArray) String() string {
 	if a.length != 0 {
 		str += strconv.Itoa(a.data[a.length-1])
 	}
-	str += "]"
+	str += " ]"
 
 	return str
 }
