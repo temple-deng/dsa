@@ -5,7 +5,11 @@
  */
 class MyArray {
   constructor(capacity = 100) {
-    if (typeof capacity !== 'number' || isNaN(capacity) || capacity < 0) {
+    if (Array.isArray(capacity)) {
+      this.data = Array.from(capacity);
+      this.length = this.data.length;
+      return;
+    } else if (typeof capacity !== 'number' || isNaN(capacity) || capacity < 0) {
       capacity = 100;
     }
     this.data = new Array(capacity)
@@ -58,6 +62,14 @@ class MyArray {
     }
 
     return this.data[index];
+  }
+
+  getLast() {
+    return this.get(this.length - 1);
+  }
+
+  getFirst() {
+    return this.get(0);
   }
 
   set(index, elem) {

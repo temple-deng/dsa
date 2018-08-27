@@ -21,7 +21,7 @@ type LinkedListMap struct {
 }
 
 func New() *LinkedListMap {
-	return &LinkedListMap{}
+	return &LinkedListMap{&ListNode{}, 0}
 }
 
 func (m *LinkedListMap) GetSize() int {

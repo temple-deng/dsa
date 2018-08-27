@@ -106,16 +106,6 @@ class BSTMap {
     node.value = value;
   }
 
-
-  minimum() {
-    if (this.root === null) {
-      throw new Error("Map is empty");
-    }
-
-    const minNode = this.minimumNode(this.root);
-    return minNode.value;
-  }
-
   minimumNode(root) {
     if (root.left !== null) {
       return this.minimumNode(root.left);
@@ -177,9 +167,9 @@ class BSTMap {
     successor.left = root.left;
     this.removeMinNode(root.right);
     root.left = root.right = null;
-    this.size--;
+    // 注意这里 size 不需要 --,因为在 removeMinNode 中已经减过了
     return successor;
   }
 }
 
-module.exports = BST;
+module.exports = BSTMap;
