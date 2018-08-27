@@ -2,7 +2,18 @@ package selfmap
 
 import (
 	"errors"
+	"fmt"
 )
+
+type ListNode struct {
+	key string
+	value int
+	next *ListNode
+}
+
+func (n *ListNode) String() string {
+	return fmt.Sprintf("{%s: %d}", n.key, n.value)
+}
 
 type LinkedListMap struct {
 	dummyHead *ListNode

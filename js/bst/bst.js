@@ -179,4 +179,51 @@ class BST {
     root.right = null;
     return right;
   }
+
+  remove(value) {
+    if (!this.contains(value)) {
+      throw new Error("Value doesn't in BST");
+    }
+    this.root = this.removeInSubtree(this.root, value);
+  }
+
+  removeInSubtree(root, value) {
+    if (root === null) {
+      return null;
+    }
+
+    if (value < root.value) {
+      root.left = this.removeInSubtree(root.left, value);
+      return root;
+    }
+
+    if (value > root.value) {
+      root.right = this.removeInSubtree(root.right, value);
+      return root;
+    }
+
+    if (root.left === null) {
+      const right = root.right;
+      root.right = null;
+      this.size--;
+      return right;
+    }
+
+    if (root.right === null) {
+      const left = root.left;
+      root.left = null;
+      this.size--;
+      return left;
+    }
+
+    const successor = this.minimumNode(root.right);
+    successor.right = root.right;
+    successor.left = root.left;
+    this.removeMinNode(root.right);
+    root.left = root.right = null;
+    this.size--;
+    return successor;
+  }
 }
+
+module.exports = BST;

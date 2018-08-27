@@ -12,7 +12,19 @@ package selfmap
 
 import (
 	"errors"
+	"fmt"
 )
+
+type BSTNode struct {
+	key string
+	value int
+	left *BSTNode
+	right *BSTNode
+}
+
+func (n *BSTNode) String() string {
+	return fmt.Sprintf("{%s: %d}", n.key, n.value)
+}
 
 type BSTMap struct {
 	root *BSTNode
