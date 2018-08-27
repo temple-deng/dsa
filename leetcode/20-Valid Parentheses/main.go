@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"../stack"
+	"../../go/stack"
 )
 
 func main() {

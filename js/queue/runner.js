@@ -1,5 +1,6 @@
 const ArrayQueue = require("./arrayQueue");
 const LinkedListQueue = require("./linkedListQueue");
+const LoopQueue = require("./loopQueue");
 
 const arrayQueue = new ArrayQueue();
 
@@ -37,3 +38,37 @@ for (let i = 0; i < 5; i++) {
 }
 
 console.log("Current queue size: %s", llQueue.getSize());
+
+console.log("--------------------LoopQueue----------------------");
+const lq = new LoopQueue();
+console.log("Current queue size = %s, current %s", lq.getSize(), lq);
+
+for (let i = 0; i < 10; i++) {
+  lq.enqueue(i);
+}
+
+console.log("After insert 10 numbers, current %s", lq);
+
+for (let i = 0; i < 5; i++) {
+  lq.dequeue();
+}
+
+console.log("After dequeue 5 value, current size = %s, current %s", lq.getSize(), lq);
+
+for (let i = 0; i < 5; i++) {
+  lq.dequeue();
+}
+
+console.log("After dequeue 5 value, current size = %s, current %s", lq.getSize(), lq);
+
+for (let i = 0; i < 11; i++) {
+  lq.enqueue(i);
+}
+
+console.log("After insert 11 numbers, size = %s, current %s", lq.getSize(), lq);
+
+for (let i = 0; i < 6; i++) {
+  lq.dequeue();
+}
+
+console.log("After dequeue 6 value, size = %s, current %s", lq.getSize(), lq);

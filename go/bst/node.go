@@ -12,11 +12,11 @@ import (
 // 由于 interface{} 在 Go 中不可排序，而暂时我们还不知道其他实现泛型的办法
 // 因此目前先定死节点值为整型
 type Node struct {
-	Value int
-	Left *Node
-	Right *Node
+	value int
+	left *Node
+	right *Node
 }
 
 func (n *Node) String() string {
-	return fmt.Sprint(n.Value)
+	return fmt.Sprint(n.value)
 }

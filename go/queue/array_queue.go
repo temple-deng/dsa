@@ -9,7 +9,7 @@ type ArrayQueue struct {
 	data *myArray.Array
 }
 
-func New(arg ...interface{}) (*ArrayQueue, error) {
+func NewArrayQueue(arg ...interface{}) (*ArrayQueue, error) {
 	if len(arg) == 0 {
 		arg = append(arg, 10)
 	}

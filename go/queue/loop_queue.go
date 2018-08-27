@@ -16,7 +16,12 @@ type LoopQueue struct {
 }
 
 func NewLoopQueue(capacities ...int) (*LoopQueue, error) {
-	capacity := capacities[0]
+	var capacity int
+	if len(capacities) == 0 {
+		capacity = 10
+	} else {
+		capacity = capacities[0]
+	}
 	lq := LoopQueue{}
 	err := lq.init(capacity)
 	return &lq, err

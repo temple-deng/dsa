@@ -3,7 +3,7 @@ package bst
 import (
 	"errors"
 	"fmt"
-	"../linkedlistqueue"
+	"../queue"
 )
 
 // 在我们的实现中，二叉搜索树是不包含重复元素的
@@ -17,52 +17,54 @@ func New() *BST {
 	return &BST{root: nil, size: 0,}
 }
 
-func (t *BST) GetSize() int {
-	return t.size
+func (this *BST) GetSize() int {
+	return this.size
 }
 
-func (t *BST) IsEmpty() bool {
-	return t.size == 0
+func (this *BST) IsEmpty() bool {
+	return this.size == 0
 }
 
-// 可导出的 Add 方法是向外暴露的添加节点到数里方法
-func (t *BST) Add(value int) {
-	t.root = t.add(t.root, value)
+func (this *BST) Add(value int) {
+	this.root = this.add(this.root, value)
 }
 
-// 非导出的 add 方法用来给树中的子树添加节点
-func (t *BST) add(root *Node, value int) *Node {
+func (this *BST) add(root *Node, value int) *Node {
 	if root == nil {
-		root = &Node{Value: value,}
-		t.size++
-		return root
+		node := &Node{value: value,}
+		this.size++
+		return node
 	}
 
-	if value > root.Value {
-		root.Right = t.add(root.Right, value)
-	} else if value < root.Value {
-		root.Left = t.add(root.Left, value)
+	if value < root.value {
+		root.left = this.add(root.left, value)
+	}
+
+	if value > root.value {
+		root.right = this.add(root.right, value)
 	}
 
 	return root
 }
 
-func (t *BST) Contains(value int) bool {
-	return t.contains(t.root, value)
+func (this *BST) Contains(value int) bool {
+	return this.contains(this.root, value)
 }
 
-func (t *BST) contains(node *Node, value int) bool {
-	if node == nil {
+func (this *BST) contains(root *Node, value int) bool {
+	if root == nil {
 		return false
 	}
 
-	if node.Value == value {
+	if root.value == value {
 		return true
-	} else if value > node.Value {
-		return t.contains(node.Right, value)
-	} else {
-		return t.contains(node.Left, value)
 	}
+
+	if value < root.value {
+		return this.contains(root.left, value)
+	}
+
+	return this.contains(root.right, value)
 }
 
 func (t *BST) PreOrder() {
@@ -78,9 +80,9 @@ func (t *BST) preOrder(node *Node) {
 	// 理论上来说，遍历方法应该接收一个函数作为参数
 	// 让这个函数去具体执行遍历时要对节点进行的操作
 	// 但是在 Go 中好像没有函数指针，那我们无法确定函数的签名是怎样的
-	fmt.Printf("%v  ", node.Value)
-	t.preOrder(node.Left)
-	t.preOrder(node.Right)
+	fmt.Printf("%v  ", node.value)
+	t.preOrder(node.left)
+	t.preOrder(node.right)
 }
 
 func (t *BST) InOrder() {
@@ -92,9 +94,9 @@ func (t *BST) inOrder(node *Node) {
 		return
 	}
 
-	t.inOrder(node.Left)
-	fmt.Printf("%v  ", node.Value)
-	t.inOrder(node.Right)
+	t.inOrder(node.left)
+	fmt.Printf("%v  ", node.value)
+	t.inOrder(node.right)
 }
 
 func (t *BST) PostOrder() {
@@ -106,13 +108,13 @@ func (t *BST) postOrder(node *Node) {
 		return
 	}
 
-	t.postOrder(node.Left)
-	t.postOrder(node.Right)
-	fmt.Printf("%v  ", node.Value)
+	t.postOrder(node.left)
+	t.postOrder(node.right)
+	fmt.Printf("%v  ", node.value)
 }
 
 func (t *BST) LevelOrder() {
-	queue := linkedlistqueue.New()
+	queue := queue.New()
 	
 	queue.Enqueue(t.root)
 	for ; !queue.IsEmpty(); {
@@ -122,173 +124,145 @@ func (t *BST) LevelOrder() {
 		// 这里由于不支持泛型，只能使用类型断言来实现
 		switch node := node.(type) {
 		case *Node:
-			if node.Left != nil {
-				queue.Enqueue(node.Left)
+			if node.left != nil {
+				queue.Enqueue(node.left)
 			}
-			if node.Right != nil {
-				queue.Enqueue(node.Right)
+			if node.right != nil {
+				queue.Enqueue(node.right)
 			}
 		}
 
 	}
 }
 
-func (t *BST) Minimum() (min int, err error) {
-	if t.size == 0 {
-		err = errors.New("BST is empty")
-		return
+// 返回树中的最大值，需要注意与下面内部方法返回值的区别
+// 这个方法会返回的最大值节点中的值，而下面的是返回最大值的那个节点
+func (this *BST) Maximum() (int, error) {
+	if this.root == nil {
+		return 0, errors.New("BST is Empty")
 	}
 
-	min = t.minimum(t.root)
-	return
+	maxNode := this.maximum(this.root)
+	return maxNode.value, nil
 }
 
-func (t *BST) minimum(node *Node) int {
-	if node.Left != nil {
-		return t.minimum(node.Left)
-	} else {
-		return node.Value
+// 返回最大值所在节点
+func (this *BST) maximum(root *Node) *Node {
+	if root.right != nil {
+		return this.maximum(root.right)
 	}
+
+	return root
 }
 
-func (t *BST) MinimumNR() (min int, err error) {
-	if t.size == 0 {
-		err = errors.New("BST is empty")
-		return
+// 返回树中的最小值，需要注意与下面内部方法返回值的区别
+// 这个方法会返回的最小值节点中的值，而下面的是返回最小值的那个节点
+func (this *BST) Minimum() (int, error) {
+	if this.root == nil {
+		return 0, errors.New("BST is Empty")
 	}
 
-	cur := t.root
-	for {
-		if cur.Left != nil {
-			cur = cur.Left
-		} else {
-			min = cur.Value
-			return
-		}
-	}
+	minNode := this.minimum(this.root)
+	return minNode.value, nil
 }
 
-func (t *BST) MaximumNR() (max int, err error) {
-	if t.size == 0 {
-		err = errors.New("BST is empty")
-		return
+// 返回最小值所在节点
+func (this *BST) minimum(root *Node) *Node {
+	if root.left != nil {
+		return this.minimum(root.left)
 	}
 
-	cur := t.root
-	for {
-		if cur.Right != nil {
-			cur = cur.Right
-		} else {
-			max = cur.Value
-			return
-		}
-	}
+	return root
 }
 
-func (t *BST) Maximum() (max int, err error) {
-	if t.size == 0 {
-		err = errors.New("BST is empty")
-		return
+func (this *BST) RemoveMax() (int, error) {
+	if this.root == nil {
+		return 0, errors.New("BST is empty")
 	}
 
-	max = t.maximum(t.root)
-	return
+	value, _ := this.Maximum()
+	this.root = this.removeMax(this.root)
+	return value, nil
 }
 
-func (t *BST) maximum(node *Node) int {
-	if node.Right != nil {
-		return t.maximum(node.Right)
-	} else {
-		return node.Value
-	}
-}
-
-func (t *BST) RemoveMin() (min int, err error) {
-	if t.size == 0 {
-		err = errors.New("BST is empty!")
-		return
+func (this *BST) removeMax(root *Node) *Node {
+	if root.right != nil {
+		root.right = this.removeMax(root.right)
+		return root
 	}
 
-	min, err = t.Minimum()
-	t.root = t.removeMin(t.root)
-	return
+	this.size--
+	return root.left
 }
 
-func (t *BST) removeMin(node *Node) *Node {
-	if node.Left != nil {
-		node.Left = t.removeMin(node.Left)
-		return node
-	} else {
-		right := node.Right
-		node = nil
-		t.size--
+func (this *BST) RemoveMin() (int, error) {
+	if this.root == nil {
+		return 0, errors.New("BST is empty")
+	}
+
+	value, _ := this.Minimum()
+	this.root = this.removeMin(this.root)
+	return value, nil
+}
+
+func (this *BST) removeMin(root *Node) *Node {
+	if root.left != nil {
+		root.left = this.removeMax(root.left)
+		return root
+	}
+
+	this.size--
+	return root.right
+}
+
+func (this *BST) Remove(value int) error {
+	if this.Contains(value) == false {
+		return errors.New("Value wasn't in BST")
+	}
+
+	this.root = this.remove(this.root, value)
+	return nil
+}
+
+func (this *BST) remove(root *Node, value int) *Node {
+	// 个人感觉这个条件是取不到的，因为我们在 remove 前已经判定了节点一定要树中
+	// 所以可能不会递归到空节点还没找到
+	if root == nil {
+		return nil
+	}
+
+	if value < root.value {
+		root.left = this.remove(root.left, value)
+		return root
+	}
+
+	if value > root.value {
+		root.right = this.remove(root.right, value)
+		return root
+	}
+
+	if root.left == nil {
+		right := root.right
+		root.right = nil
+		this.size--
 		return right
 	}
-}
 
-func (t *BST) RemoveMax() (max int, err error) {
-	if t.size == 0 {
-		err = errors.New("BST is empty!")
-		return
-	}
-
-	max, err = t.Maximum()
-	t.root = t.removeMax(t.root)
-	return
-}
-
-func (t *BST) removeMax(node *Node) *Node {
-	if node.Right != nil {
-		node.Right = t.removeMax(node.Right)
-		return node
-	} else {
-		left := node.Left
-		node = nil
-		t.size--
+	if root.right == nil {
+		left := root.left
+		root.left = nil
+		this.size--
 		return left
 	}
-}
 
-func (t *BST) Remove(value int) {
-	t.root = t.remove(value, t.root)
-}
-
-func (t *BST) remove(value int, root *Node) *Node {
-	if root == nil {
-		return root
-	} else {
-		if value > root.Value {
-			root.Left = t.remove(value, root.Left)
-			return root
-		} else if value < root.Value {
-			root.Right = t.remove(value, root.Right)
-			return root
-		} else {
-			if root.Left == nil {
-				right := root.Right
-				root = right
-				t.size--
-				return root
-			}
-			
-			if root.Right == nil {
-				left := root.Left
-				root = left
-				t.size--
-				return root
-			}
-
-			// 首先找到右边子树中的最小值，用这个节点来取代待删除节点
-			// 而不是直接把下面的节点上提，这样我们就不用进行树的变换
-			// 否则为了维持二叉树的性质，还要进行树的重组
-			min := t.minimum(root.Right)
-			right := t.removeMin(root.Right)
-			node := &Node{Value: min, Right: right, Left: root.Left,}
-			root = nil
-			return node
-		}
-		
-	}
+	successor := this.minimum(root.right)
+	successor.left = root.left
+	successor.right = root.right
+	this.removeMin(root.right)
+	root.left = nil
+	root.right = nil
+	this.size--
+	return successor
 }
 
 func (t *BST) String() string {

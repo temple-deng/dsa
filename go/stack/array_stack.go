@@ -10,7 +10,7 @@ type ArrayStack struct {
 	array *myArray.Array
 }
 
-func New(arg ...interface{}) (*ArrayStack, error) {
+func NewArrayStack(arg ...interface{}) (*ArrayStack, error) {
 	if len(arg) == 0 {
 		arg = append(arg, 10)
 	}

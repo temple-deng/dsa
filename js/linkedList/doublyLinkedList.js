@@ -12,7 +12,9 @@ class Node {
 /**
  * 单纯的双向链表好像和单链表没什么区别啊，还要多维护一个指针
  * 除非我们再添加一个 tail 指针指向链表中的最后一个节点，以便可以向前搜索
+ * 又或者是使用双向循环链表
  * 否则性能可能比单链表还差
+ * 我们这里先添加一个 tail 指针优化性能，循环链表放到另一个文件中实现
  */
 class DoublyLinkedList {
   constructor() {
@@ -35,7 +37,7 @@ class DoublyLinkedList {
     }
 
     let prev = this.dummyHead;
-    for (i = 0; i < index; i++) {
+    for (let i = 0; i < index; i++) {
       prev = prev.next;
     }
 
@@ -44,7 +46,11 @@ class DoublyLinkedList {
     node.next = next;
     node.prev = prev;
     prev.next = node;
-    next.prev = node;
+
+    // 在最后的位置进行插入
+    if (next !== null) {
+      next.prev = node;
+    }
     this.size++;
   }
 
@@ -72,12 +78,64 @@ class DoublyLinkedList {
     if (next !== null) {
       next.prev = prev;
     }
-    node.prev = node.next = null;
+    cur.prev = cur.next = null;
     this.size--;
+    return cur.value;
+  }
+
+  removeFirst() {
+    return this.remove(0);
+  }
+
+  removeLast() {
+    return this.remove(this.size - 1);
+  }
+
+  get(index) {
+    if (index < 0 || index >= this.size) {
+      throw new Error("Index out of range");
+    }
+
+    let cur = this.dummyHead.next;
+    for (let i = 0; i < index; i++) {
+      cur = cur.next;
+    }
+
+    return cur.value;
+  }
+
+  set(index, elem) {
+    if (index < 0 || index >= this.size) {
+      throw new Error("Index out of range");
+    }
+
+    let cur = this.dummyHead.next;
+    for (let i = 0; i < index; i++) {
+      cur = cur.next;
+    }
+
+    cur.value = elem;
+  }
+
+  getFirst() {
+    return this.get(0);
+  }
+
+  getLast() {
+    return this.get(this.size - 1);
+  }
+
+  toString() {
+    let str = "[ ";
+    let cur = this.dummyHead.next;
+    while(cur !== null) {
+      str += cur.value + " -> ";
+      cur = cur.next;
+    }
+
+    str += "Null ]";
+    return str;
   }
 }
 
 module.exports = DoublyLinkedList;
-
-
-
