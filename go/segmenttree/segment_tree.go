@@ -39,6 +39,7 @@ func (s *SegmentTree) Set(index int, value int) error {
 	if index < 0 || index >= len(s.data) {
 		return errors.New("Index out of range")
 	}
+	s.data[index] = value
 	s.set(0, 0, len(s.data) - 1, index, value)
 	return nil
 }

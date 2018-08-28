@@ -10,6 +10,11 @@ type PriorityQueue struct {
 	heap *heap.MaxHeap
 }
 
+func New() *PriorityQueue {
+	maxHeap, _ := heap.New()
+	return &PriorityQueue{maxHeap}
+}
+
 func (p *PriorityQueue) IsEmpty() bool {
 	return p.heap.IsEmpty()
 }

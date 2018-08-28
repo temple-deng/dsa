@@ -20,7 +20,7 @@ func (t *Trie) Add(word string) {
 	length := len(runes)
 	for i := 0; i < length; i++ {
 		curRune := runes[i]
-		if _, ok := cur.next[curRune]; ok != false {
+		if _, ok := cur.next[curRune]; ok == false {
 			cur.next[curRune] = NewNode(false)
 		}
 		cur = cur.next[curRune]
