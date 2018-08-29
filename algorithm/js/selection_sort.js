@@ -3,7 +3,7 @@
  * @param {Array} arr 待排序数组
  * @returns {Array} arr 排好序的数组
  */
-function selectSort(arr) {
+function selectionSort(arr) {
   for (let i = 0; i < arr.length; i++) {
     let minIndex = i;
     for (let j = i+1; j < arr.length; j++) {
