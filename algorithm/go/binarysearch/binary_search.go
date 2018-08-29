@@ -1,6 +1,6 @@
-package main
+package binarysearch
 
-func BinartSearch(arr []int, elem int) int {
+func BinarySearch(arr []int, elem int) int {
 	low := 0
 	high := len(arr) - 1
 
@@ -17,8 +17,4 @@ func BinartSearch(arr []int, elem int) int {
 	}
 
 	return -1
-}
-
-func main() {
-	
 }
