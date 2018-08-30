@@ -132,3 +132,51 @@ func (l *LinkedList) String() string {
 	str += "Null"
 	return str
 }
+
+// 补充内容
+// 统计列表中指定元素出现的次数
+func (l *LinkedList) Count(elem interface{}) int {
+	count := 0
+	for cur := l.dummyHead.next; cur != nil; cur = cur.next {
+		if cur.data == elem {
+			count++
+		}
+	}
+	return count
+}
+
+// 拷贝一份链表
+func (l *LinkedList) Copy() *LinkedList {
+	newList := New()
+
+	for cur := l.dummyHead.next; cur != nil; cur = cur.next {
+		newList.AddLast(cur.data)
+	}
+
+	return newList
+}
+
+// 优化后的拷贝操作
+// 理论上来说复杂度为 O(n) 级别
+func (l *LinkedList) OptimizedCopy() *LinkedList {
+	nodes := []*Node{}
+	newList := New()
+
+	for cur := l.dummyHead.next; cur != nil; cur = cur.next {
+		node := &Node{data: cur.data,}
+		nodes = append(nodes, node)
+	}
+
+	for i := 0; i < len(nodes) - 1; i++ {
+		nodes[i].next = nodes[i+1]
+	}
+
+
+	newList.size = l.GetSize()
+	if len(nodes) == 0 {
+		return newList
+	}
+	head := Node{data: nil, next: nodes[0],}
+	newList.dummyHead = head
+	return newList
+}
