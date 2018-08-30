@@ -72,4 +72,194 @@ func InsertionSort(arr []int) []int {
 小集合，这样只要我们能将之后的归并过程复杂度控制在 O(n) 级别，则整个归并排序的复杂度
 就可以控制在 O(nlogn) 级别。    
 
+```go
+// 第一个版本的归并排序
+func MergeSort(arr []int) {
+	mergeSort(arr, 0, len(arr) - 1)
+}
 
+func mergeSort(arr []int, l, r int) {
+	if l >= r {
+		return
+	}
+
+	mid := l + (r - l) / 2
+	mergeSort(arr, l, mid)
+	mergeSort(arr, mid+1, r)
+	merge(arr, l, mid, r)
+}
+
+func merge(arr []int, l, mid, r int) {
+	length := r - l + 1
+	temp := make([]int, length)
+
+	k := 0
+	i := l
+	j := mid + 1
+	for ; i <= mid && j <= r; {
+		if arr[i] < arr[j] {
+			temp[k] = arr[i]
+			i++
+		} else {
+			temp[k] = arr[j]
+			j++
+		}
+		k++
+	}
+
+	for ; i <= mid; i++ {
+		temp[k] = arr[i]
+		k++
+	}
+
+	for ; j <= r; j++ {
+		temp[k] = arr[j]
+		k++
+	}
+
+	for i := 0; i < k; i++ {
+		arr[i+l] = temp[i]
+	}
+}
+```    
+
+通常情况下，当我们递归到一定程度时，如果改用插入排序处理，性能会比上一个版本更好一点。   
+
+```go
+func MergeSort(arr []int) {
+	mergeSort(arr, 0, len(arr) - 1)
+}
+
+func mergeSort(arr []int, l, r int) {
+	if r - l <= 15 {
+		insertionSort(arr, l, r)
+		return
+	}
+
+	mid := l + (r - l) / 2
+	mergeSort(arr, l, mid)
+	mergeSort(arr, mid+1, r)
+	merge(arr, l, mid, r)
+}
+
+func merge(arr []int, l, mid, r int) {
+	length := r - l + 1
+	temp := make([]int, length)
+
+	k := 0
+	i := l
+	j := mid + 1
+	for ; i <= mid && j <= r; {
+		if arr[i] < arr[j] {
+			temp[k] = arr[i]
+			i++
+		} else {
+			temp[k] = arr[j]
+			j++
+		}
+		k++
+	}
+
+	for ; i <= mid; i++ {
+		temp[k] = arr[i]
+		k++
+	}
+
+	for ; j <= r; j++ {
+		temp[k] = arr[j]
+		k++
+	}
+
+	for i := 0; i < k; i++ {
+		arr[i+l] = temp[i]
+	}
+}
+
+func insertionSort(arr []int, l, r int) {
+	for i := l + 1; i <= r; i++ {
+		value := arr[i]
+		j := i
+		for ; j > l && arr[j-1] < value; j-- {
+			arr[j] = arr[j-1]
+		}
+		arr[j] = value
+	}
+}
+```   
+
+上面的都是自顶向下的归并排序算法。   
+
+下面是自底向上的归并排序：   
+
+```go
+func MergeSortBU(arr []int) {
+	length := len(arr)
+	for sz := 1; sz < length; sz += sz {
+		for i := 0; i + sz < length; i += sz + sz {
+			merge(arr, i, i + sz - 1, int(math.Min(float64(i+sz+sz-1), float64(length-1))))
+		}
+	}
+}
+```   
+
+## 快排
+
+@TODO partition-1.png    
+
+```js
+function quickSort(arr) {
+  $quickSort(arr, 0, arr.length - 1);
+}
+
+function $quickSort(arr, l, r) {
+  if (l >= r) {
+    return;
+  }
+
+  mid = partition(arr, l, r);
+  $quickSort(arr, l, mid-1);
+  $quickSort(arr, mid+1, r);
+}
+
+/**
+ * 分区，arr[l, mid - 1] < arr[mid] <= arr[mid+1, r]
+ * @param {array} arr 原数组
+ * @param {int} l 分区左边界
+ * @param {int} r 分区右边界
+ * @return {int} mid
+ */
+function partition(arr, l, r) {
+  // 最基本的情况下，选择最左边的元素做基准值
+  const pivot = arr[l];
+
+  let j = l;
+  // arr[l+1, j] 是小于 pivot 的元素
+  // arr[j+1, r] 是大于 pivot 的元素
+  for(let i = l+1; i <= r; i++) {
+    if (arr[i] < pivot) {
+      swap(arr, j+1, i);
+      j++;
+    }
+  }
+  swap(arr, l, j);
+  return j;
+}
+
+function swap(arr, i, j) {
+  const temp = arr[j];
+  arr[j] = arr[i];
+  arr[i] = temp;
+}
+```    
+
+最基本的情况下，我们每次取分区的最左侧元素作为基准值。   
+
+**优化方案一：随机取 pivot 值**    
+
+```js
+  swap(arr, l, Math.random() * 1000 % (r-l+1) + l);
+	const pivot = arr[l];
+```    
+
+但是此时快排仍有一个问题，当数据集合中有大量的重复元素时，划分时仍有可能划分的极度不平衡，
+此时的算法复杂度就又向 O(n^2) 靠拢了。    
