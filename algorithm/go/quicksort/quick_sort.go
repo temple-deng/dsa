@@ -1,22 +1,49 @@
 package quicksort
 
-func QuickSort(arr []int) []int {
-	length := len(arr)
+import (
+	"time"
+	"math/rand"
+)
 
-	if length < 2 {
-		return arr
+func QuickSort(arr []int) {
+	quickSort(arr, 0, len(arr) - 1)
+}
+
+func quickSort(arr []int, l, r int) {
+	if l >= r {
+		return
 	}
 
-	pivot := arr[length-1]
-	var left, right []int
+	mid := partition(arr, l, r)
+	quickSort(arr, l, mid-1)
+	quickSort(arr, mid+1, r)
+}
 
-	for i := 0; i < length-1; i++ {
-		if arr[i] < pivot {
-			left = append(left, arr[i])
-		} else {
-			right = append(right, arr[i])
+func partition(arr []int, l, r int) int {
+	rand.Seed(time.Now().Unix())
+	swap(arr, l, rand.Int() % (r-l+1) + l)
+
+	pivot := arr[l]
+	lo := l + 1
+	hi := r
+
+	for {
+		for ; lo <= r && arr[lo] < pivot; lo++ {}
+		for ; hi >= l+1 && arr[hi] > pivot; hi-- {}
+		if lo > hi {
+			break
 		}
+		swap(arr, lo, hi)
+		lo++
+		hi--
 	}
 
-	return append(append(QuickSort(left), pivot), QuickSort(right)...)
+	swap(arr, l, lo-1)
+	return lo-1
+}
+
+func swap(arr []int, i, j int) {
+	temp := arr[j]
+	arr[j] = arr[i]
+	arr[i] = temp
 }

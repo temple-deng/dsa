@@ -2,7 +2,6 @@ package mergesort
 
 import (
 	"math"
-	// "fmt"
 )
 
 func MergeSort(arr []int) {
@@ -14,6 +13,9 @@ func mergeSort(arr []int, l, r int) {
 		insertionSort(arr, l, r)
 		return
 	}
+	// if l >= r {
+	// 	return
+	// }
 
 	mid := l + (r - l) / 2
 	mergeSort(arr, l, mid)
@@ -58,7 +60,7 @@ func insertionSort(arr []int, l, r int) {
 	for i := l + 1; i <= r; i++ {
 		value := arr[i]
 		j := i
-		for ; j > l && arr[j-1] < value; j-- {
+		for ; j > l && arr[j-1] > value; j-- {
 			arr[j] = arr[j-1]
 		}
 		arr[j] = value

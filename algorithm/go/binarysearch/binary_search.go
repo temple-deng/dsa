@@ -5,7 +5,7 @@ func BinarySearch(arr []int, elem int) int {
 	high := len(arr) - 1
 
 	for ;low <= high; {
-		midIndex := (low + high) / 2
+		midIndex := low + (high - low) / 2
 		guess := arr[midIndex]
 		if guess == elem {
 			return midIndex

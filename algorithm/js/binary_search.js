@@ -3,7 +3,7 @@ function BinarySearch(arr, elem) {
   var high = arr.length - 1;
 
   while(low !== high) {
-    var midIndex = Math.floor((low+high)/2)
+    var midIndex = Math.floor((high-low)/2) + low;
     var mid = arr[midIndex]
     if (mid === elem) {
       return midIndex

@@ -12,6 +12,12 @@ function $quickSort(arr, l, r) {
   $quickSort(arr, mid+1, r);
 }
 
+/**
+ * 同样 [l, lo-2] 小于等于 pivot, [lo, r] 大于等于 pivot
+ * @param {*} arr 
+ * @param {*} l
+ * @param {*} r
+ */
 function partition(arr, l, r) {
   swap(arr, l, parseInt(Math.random() * 10000 % (r - l + 1)) + l);
   const pivot = arr[l];

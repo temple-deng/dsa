@@ -1,16 +1,17 @@
 package sorttest
 
 import (
-	"fmt"
 	"testing"
 	"../selectionsort"
 	"../insertionsort"
 	"../mergesort"
+	"../quicksort"
 	"math/rand"
+	"time"
 )
 
-func generateRandomArr(size int, min int, max int, seed int64) []int {
-	rand.Seed(seed)
+func generateRandomArr(size int, min int, max int) []int {
+	rand.Seed(time.Now().Unix())
 	arr := make([]int, size)
 	for i := 0; i < size; i++ {
 		arr[i] = rand.Int() % (max - min + 1) + min
@@ -19,7 +20,7 @@ func generateRandomArr(size int, min int, max int, seed int64) []int {
 }
 
 func TestSelectionSort(t *testing.T) {
-	arr := generateRandomArr(50, 0, 1000, 10)
+	arr := generateRandomArr(50, 0, 1000)
 	sortedArr := selectionsort.SelectionSort(arr)
 
 	for i := 0; i < len(arr) - 1; i++ {
@@ -30,7 +31,7 @@ func TestSelectionSort(t *testing.T) {
 }
 
 func TestInsertionSort(t *testing.T) {
-	arr := generateRandomArr(50, 0, 1000, 11)
+	arr := generateRandomArr(50, 0, 1000)
 	sortedArr := insertionsort.InsertionSort(arr)
 	for i := 0; i < len(arr) - 1; i++ {
 		if sortedArr[i] > sortedArr[i+1] {
@@ -40,11 +41,28 @@ func TestInsertionSort(t *testing.T) {
 }
 
 func TestMergeSort(t *testing.T) {
-	// arr := generateRandomArr(50, 0, 1000, 11)
-	arr := []int{5,9,3,8,7,6,2,12}
-	// fmt.Println(arr)
+	arr := generateRandomArr(50, 0, 1000)
 	mergesort.MergeSort(arr)
-	fmt.Println(arr)
+	for i := 0; i < len(arr) - 1; i++ {
+		if arr[i] > arr[i+1] {
+			t.Error("Error")
+		}
+	}
+}
+
+func TestQuickSort(t *testing.T) {
+	arr := generateRandomArr(50, 0, 1000)
+	quicksort.QuickSort(arr)
+	for i := 0; i < len(arr) - 1; i++ {
+		if arr[i] > arr[i+1] {
+			t.Error("Error")
+		}
+	}
+}
+
+func TestThreeWayQuickSort(t *testing.T) {
+	arr := generateRandomArr(50, 0, 1000)
+	quicksort.ThreeWayQuickSort(arr)
 	for i := 0; i < len(arr) - 1; i++ {
 		if arr[i] > arr[i+1] {
 			t.Error("Error")
