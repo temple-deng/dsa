@@ -24,6 +24,7 @@ class BST {
     return this.size === 0;
   }
 
+  // 像树中添加节点
   add(value) {
     this.root = this.addInSubtree(this.root, value);
   }
@@ -110,6 +111,7 @@ class BST {
     console.log(node.toString());
   }
 
+  // 寻找树中最大的值
   maximum() {
     if (this.root === null) {
       throw new Error("BST is empty");
@@ -119,6 +121,7 @@ class BST {
     return maxNode.value;
   }
 
+  // 寻找树中拥有最大值的节点
   maximumNode(root) {
     if (root.right !== null) {
       return this.maximumNode(root.right);
@@ -127,6 +130,7 @@ class BST {
     return root;
   }
 
+  // 寻找树中最小的值
   minimum() {
     if (this.root === null) {
       throw new Error("BST is empty");
@@ -136,6 +140,7 @@ class BST {
     return minNode.value;
   }
 
+  // 寻找树中拥有最小值的节点
   minimumNode(root) {
     if (root.left !== null) {
       return this.minimumNode(root.left);
@@ -144,6 +149,7 @@ class BST {
     return root;
   }
 
+  // 移除最大值
   removeMax() {
     const max = this.maximum();
     this.root = this.removeMaxNode(this.root);
@@ -162,6 +168,7 @@ class BST {
     return left;
   }
 
+  // 移除最小值
   removeMin() {
     const min = this.minimum();
     this.root = this.removeMinNode(this.root);
@@ -180,6 +187,7 @@ class BST {
     return right;
   }
 
+  // 移除一个值
   remove(value) {
     if (!this.contains(value)) {
       throw new Error("Value doesn't in BST");

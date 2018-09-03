@@ -246,25 +246,23 @@ func (this *AVLTree) remove(root *Node, key string) *Node {
 			root.right = nil
 			this.size--
 			retNode = right
-		}
-	
-		if root.right == nil {
+		} else if root.right == nil {
 			left := root.left
 			root.left = nil
 			this.size--
 			retNode = left
-		}
+		} else {
+			successor := this.minimum(root.right)
+			successor.left = root.left
+			// 这里避免用 removeMin，因为这个操作也是可能打破平衡性的
+			successor.right = this.remove(root.right, successor.key)
 	
-		successor := this.minimum(root.right)
-		successor.left = root.left
-		// 这里避免用 removeMin，因为这个操作也是可能打破平衡性的
-		successor.right = this.remove(root.right, successor.key)
-
-		// 这里采用不那么激进的 root = nil 赋值
-		// 避免出现意外的问题
-		root.left = nil
-		root.right = nil
-		retNode = successor
+			// 这里采用不那么激进的 root = nil 赋值
+			// 避免出现意外的问题
+			root.left = nil
+			root.right = nil
+			retNode = successor
+		}
 	}
 
 	// Note
