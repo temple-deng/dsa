@@ -2,6 +2,7 @@ package sorttest
 
 import (
 	"testing"
+	"../bubblesort"
 	"../selectionsort"
 	"../insertionsort"
 	"../mergesort"
@@ -17,6 +18,17 @@ func generateRandomArr(size int, min int, max int) []int {
 		arr[i] = rand.Int() % (max - min + 1) + min
 	}
 	return arr
+}
+
+func TestBubbleSort(t *testing.T) {
+	arr := generateRandomArr(50, 0, 1000)
+	bubblesort.BubbleSort(arr)
+
+	for i := 0; i < len(arr) - 1; i++ {
+		if arr[i] > arr[i+1] {
+			t.Error("Error")
+		}
+	}
 }
 
 func TestSelectionSort(t *testing.T) {

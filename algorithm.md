@@ -1,3 +1,22 @@
+<!-- TOC -->
+
+- [排序](#排序)
+  - [选择排序 Selection Sort](#选择排序-selection-sort)
+  - [插入排序 Insertion Sort](#插入排序-insertion-sort)
+  - [希尔排序 Shell Sort](#希尔排序-shell-sort)
+  - [归并排序](#归并排序)
+  - [快排](#快排)
+  - [总结](#总结)
+- [搜索](#搜索)
+  - [序列搜索](#序列搜索)
+    - [分而治之的搜索](#分而治之的搜索)
+    - [信息复用](#信息复用)
+      - [Boyer-Moore 众数问题(majority number)](#boyer-moore-众数问题majority-number)
+      - [最大子序列和](#最大子序列和)
+      - [KMP](#kmp)
+
+<!-- /TOC -->
+
 # 排序
 
 ## 选择排序 Selection Sort
