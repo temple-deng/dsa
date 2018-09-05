@@ -13,6 +13,7 @@ type Path struct {
 }
 
 func NewPath(graph Graph, s int) *Path {
+	// 这里其实应该判断一下 s 的合法性的
 	path := &Path{}
 	path.graph = graph
 	path.visited = make([]bool, graph.V())

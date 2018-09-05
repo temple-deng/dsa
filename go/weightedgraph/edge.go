@@ -1,6 +1,7 @@
 package weightedgraph
 
 import (
+	"fmt"
 	"errors"
 )
 
@@ -37,4 +38,8 @@ func (this *Edge) Other(x int) (int, error) {
 	}
 
 	return -1, errors.New("Invalid Vertex")
+}
+
+func (this *Edge) String() string {
+	return fmt.Sprintf("%d -> %d: %.2f", this.v, this.w, this.weight)
 }

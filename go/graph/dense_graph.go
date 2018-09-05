@@ -46,6 +46,7 @@ func (this *DenseGraph) AddEdge(v, w int) error {
 	if !this.HasEdge(v, w) {
 		this.g[v][w] = true
 
+		// 这里其实额外判断一下是自环也行，不判断也行，直接覆盖
 		if !this.directed {
 			this.g[w][v] = true
 		}
