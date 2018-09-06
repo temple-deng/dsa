@@ -59,9 +59,38 @@ func TestLazyPrim(t *testing.T) {
 	}
 
 	lazyPrim := NewLazyPrim(graph)
-	fmt.Println(lazyPrim.Result())
+	fmt.Printf("%.2f\n", lazyPrim.Result())
 	edges := lazyPrim.MSTEdges()
 	for i := 0; i < len(edges); i++ {
 		fmt.Println(edges[i])
+	}
+}
+
+
+func TestPrim(t *testing.T) {
+	graph := NewSparseGraph(int(testGraph1[0][0]), false)
+	for i := 1; i < len(testGraph1); i++ {
+		graph.AddEdge(int(testGraph1[i][0]), int(testGraph1[i][1]), testGraph1[i][2])
+	}
+
+	lazyPrim := NewLazyPrim(graph)
+	fmt.Printf("%.2f\n", lazyPrim.Result())
+	edges := lazyPrim.MSTEdges()
+	for i := 0; i < len(edges); i++ {
+		fmt.Printf("%v\n", edges[i])
+	}
+}
+
+func TestKruskal(t *testing.T) {
+	graph := NewSparseGraph(int(testGraph1[0][0]), false)
+	for i := 1; i < len(testGraph1); i++ {
+		graph.AddEdge(int(testGraph1[i][0]), int(testGraph1[i][1]), testGraph1[i][2])
+	}
+
+	kruskal := NewKruskal(graph)
+	fmt.Printf("%.2f\n", kruskal.Result())
+	edges := kruskal.MSTEdges()
+	for i := 0; i < len(edges); i++ {
+		fmt.Printf("%v\n", edges[i])
 	}
 }

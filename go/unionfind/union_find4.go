@@ -10,7 +10,7 @@ type UnionFind4 struct {
 	rank 	 []int
 }
 
-func NewRandUnionFind(size int) *UnionFind4 {
+func NewRankUnionFind(size int) *UnionFind4 {
 	parent := make([]int, size)
 	rank := make([]int, size)
 

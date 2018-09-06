@@ -747,7 +747,11 @@ j 列的值为 true，则表示图中存在一条 i -&gt; j 的边，也可以�
 上面就是 lazy prim 算法的简单思路，之所以叫 lazy 是因为在不断切分的过程中，我们并没有主动
 去堆中把非横切边的边取出，而是直到出栈时遇到横切边才进行处理。   
 
-LazyPrim 的时间复杂度是 O(ElogE) 级别的，而正常的 Prim 算法是
+LazyPrim 的时间复杂度是 O(ElogE) 级别的，而正常的 Prim 算法是 O(ElogV)。    
+
+Kruskal 是 O(ElogE)。    
+
+Dijkstra 单源最短路径算法的前提是：图中不能有负权的边。复杂度 O(ElogV)。   
 
 ## 无向图
 

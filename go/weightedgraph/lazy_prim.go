@@ -27,9 +27,13 @@ func NewLazyPrim(graph Graph) *LazyPrimMST {
 
 
 func (this *LazyPrimMST) lazyPrim() {
+	// 任选一个节点开始我们的切分过程
 	this.visit(0)
+
 	for ; !this.heap.IsEmpty(); {
 		edge, _ := this.heap.RemoveMin()
+
+		// 如果当前这条权值最小的边已经不再是一条横切边了
 		if this.marked[edge.V()] == this.marked[edge.W()] {
 			continue
 		}
@@ -56,10 +60,12 @@ func (this *LazyPrimMST) visit(v int) {
 
 	for i := 0; i < len(vertexs); i++ {
 		vertex := vertexs[i]
+		// this.marked[other] == false 说明这条边是一条横切边，入堆
 		if other, _ := vertex.Other(v);!this.marked[other] {
 			this.heap.Add(vertex)
 		}
 	}
+	// fmt.Println(this.heap.GetSize())
 }
 
 func (this *LazyPrimMST) MSTEdges() []Edge {
