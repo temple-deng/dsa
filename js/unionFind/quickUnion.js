@@ -1,7 +1,7 @@
 class QuickUnion {
-  constructor(data) {
-    this.data = Array(data.length);
-    for (let i = 0; i < data.length; i++) {
+  constructor(size) {
+    this.data = Array(size);
+    for (let i = 0; i < size; i++) {
       this.data[i] = i;
     }
   }

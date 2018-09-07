@@ -51,8 +51,8 @@ func (this *IndexMaxHeap) Insert(index, value int) error {
 	// 也就是并不是所有的数据都在堆中有代表的索引
 	this.indexes[this.count] = index
 	this.reverse[index] = this.count
-	this.count++
 	this.shiftUp(this.count)
+	this.count++
 	return nil
 }
 
@@ -107,7 +107,7 @@ func (this *IndexMaxHeap) GetItem(index int) (int, error) {
 	if !this.contains(index) {
 		return 0, errors.New("Invalid index")
 	}
-	return this.data[this.indexes[index]], nil
+	return this.data[index], nil
 }
 
 func (this *IndexMaxHeap) Change(index int, value int) error {

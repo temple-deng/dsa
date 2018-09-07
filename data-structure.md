@@ -36,6 +36,8 @@
     - [分拆](#分拆)
 - [图论](#图论)
   - [课程笔记](#课程笔记)
+  - [Dijkstra 算法](#dijkstra-算法)
+  - [Bellman-Ford 算法](#bellman-ford-算法)
   - [无向图](#无向图)
     - [邻接表](#邻接表)
 
@@ -751,7 +753,58 @@ LazyPrim 的时间复杂度是 O(ElogE) 级别的，而正常的 Prim 算法是 
 
 Kruskal 是 O(ElogE)。    
 
+
+
+## Dijkstra 算法
+
 Dijkstra 单源最短路径算法的前提是：图中不能有负权的边。复杂度 O(ElogV)。   
+
+![dj1](https://raw.githubusercontent.com/temple-deng/markdown-images/master/dsa/dj1.png)    
+
+首先确定起始点，建立路径表。    
+
+![dj2](https://raw.githubusercontent.com/temple-deng/markdown-images/master/dsa/dj2.png)    
+
+由起点 0 可以访问到节点 1, 2, 3。更新路径表。    
+
+![dj3](https://raw.githubusercontent.com/temple-deng/markdown-images/master/dsa/dj3.png)    
+
+这时在所有未访问的的节点中，到达节点 2 的路径是最短的，因此这条路径一定是我们达到节点 2 的最短
+路径，因为我们目前所有已访问的路径中到达 2 的路径就已经比这条路径长了，如果再绕一下其他的
+节点，那路径只会更长不会更短，因此这条路径就是达到节点 2 的最短路径。   
+
+![dj4](https://raw.githubusercontent.com/temple-deng/markdown-images/master/dsa/dj4.png)    
+
+确定了一个到达节点 2 的最短路径后，我们就可以将节点 2 标为已访问的。然后进行松弛操作，即由
+节点 2 开始，探查其所有邻边。更新路径表。    
+
+![dj5](https://raw.githubusercontent.com/temple-deng/markdown-images/master/dsa/dj5.png)    
+
+然后发现，到节点 1 的路径 3 是目前到未访问的节点的路径中最短的那条。则开始访问节点 1。访问
+节点 1 所有的邻边。   
+
+![dj6](https://raw.githubusercontent.com/temple-deng/markdown-images/master/dsa/dj6.png)    
+
+进行松弛操作。    
+
+![dj7](https://raw.githubusercontent.com/temple-deng/markdown-images/master/dsa/dj7.png)    
+
+然后发现到节点 4 的路径 4 是目前到未访问的节点的路径中最短的那条。则开始访问节点 4.    
+
+![dj8](https://raw.githubusercontent.com/temple-deng/markdown-images/master/dsa/dj8.png)    
+
+后续再访问节点即可。   
+
+## Bellman-Ford 算法
+
+前提：图中不能有负权环。  
+
+复杂度 O(EV)。    
+
+如果一个图没有负权环，从一点到另外一点的最短路径，最多经过所有的 V 个顶点，有 V-1 条边。
+否则，存在顶点经过了两次，即存在负权环。   
+
+
 
 ## 无向图
 

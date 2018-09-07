@@ -50,7 +50,7 @@ func (this *DenseGraph) AddEdge(v, w int, weight float32) error {
 	}
 
 	this.g[v][w] = NewEdge(v, w, weight)
-	if !this.directed {
+	if !this.directed && v != w {
 		this.g[w][v] = NewEdge(v, w, weight)
 	}
 
@@ -85,7 +85,7 @@ func (this *DenseGraph) Vertexs(v int) ([]Edge, error) {
 }
 
 func (this *DenseGraph) String() string {
-	str := "Adjance Martix"
+	str := "Adjacency Matrix"
 
 	for i := 0; i < this.n; i++ {
 		str += fmt.Sprintf("\n%d Vertexs:", i)

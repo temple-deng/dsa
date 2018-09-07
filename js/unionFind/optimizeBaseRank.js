@@ -1,8 +1,8 @@
 class OptimizedBaseRank {
-  constructor(data) {
-    this.data = Array(data.length);
-    this.rank = Array(data.length);
-    for (let i = 0; i < data.length; i++) {
+  constructor(size) {
+    this.data = Array(size);
+    this.rank = Array(size);
+    for (let i = 0; i < size; i++) {
       this.data[i] = i;
       this.rank[i] = 1;
     }
@@ -18,10 +18,10 @@ class OptimizedBaseRank {
     return index;
   }
 
-  unionElements(index1, index2) {
+  UnionElements(index1, index2) {
     let par1 = this.find(index1);
     let par2 = this.find(index2);
-    if (par1 === -1 || par2 === -2) {
+    if (par1 === -1 || par2 === -1) {
       throw new Error("Index illegal");
     }
 
@@ -29,8 +29,8 @@ class OptimizedBaseRank {
       return;
     }
 
-    let rank1 = this.size[par1];
-    let rank2 = this.size[par2];
+    let rank1 = this.rank[par1];
+    let rank2 = this.rank[par2];
     if (rank1 < rank2) {
       this.data[par1] = par2;
     } else if (rank1 > rank2) {
@@ -41,7 +41,7 @@ class OptimizedBaseRank {
     }
   }
 
-  isConnected(index1, index2) {
+  IsConnected(index1, index2) {
     let par1 = this.find(index1);
     let par2 = this.find(index2);
     if (par1 === -1 || par2 === -1) {
@@ -52,4 +52,4 @@ class OptimizedBaseRank {
   }
 }
 
-module.exports = OptimizedBaseRank();
+module.exports = OptimizedBaseRank;

@@ -4,17 +4,17 @@ import (
 	"errors"
 )
 
-type IndexMinHeap struct {
-	data []*Edge
+type IndexMinHeapF struct {
+	data []float32
 	indexes []int
 	reverse []int
 	count int
 	capacity int
 }
 
-func NewIndexMinHeap(cap int) *IndexMinHeap {
-	heap := &IndexMinHeap{}
-	heap.data = make([]*Edge, cap)
+func NewIndexMinHeapF(cap int) *IndexMinHeapF {
+	heap := &IndexMinHeapF{}
+	heap.data = make([]float32, cap)
 	heap.indexes = make([]int, cap)
 	heap.reverse = make([]int, cap)
 
@@ -26,15 +26,15 @@ func NewIndexMinHeap(cap int) *IndexMinHeap {
 	return heap
 }
 
-func (this *IndexMinHeap) GetSize() int {
+func (this *IndexMinHeapF) GetSize() int {
 	return this.count
 }
 
-func (this *IndexMinHeap) IsEmpty() bool {
+func (this *IndexMinHeapF) IsEmpty() bool {
 	return this.count == 0
 }
 
-func (this *IndexMinHeap) Insert(index int, value *Edge) error {
+func (this *IndexMinHeapF) Insert(index int, value float32) error {
 	// 满容量或者索引超出
 	if this.count == this.capacity || index >= this.capacity || index < 0 {
 		return errors.New("Error: No availablle space or index out of range")
@@ -56,16 +56,16 @@ func (this *IndexMinHeap) Insert(index int, value *Edge) error {
 	return nil
 }
 
-func (this *IndexMinHeap) contains(index int) bool {
+func (this *IndexMinHeapF) contains(index int) bool {
 	if index < 0 || index >= this.capacity {
 		return false
 	}
 	return this.reverse[index] != -1
 }
 
-func (this *IndexMinHeap) ExtractMin() (*Edge, error) {
+func (this *IndexMinHeapF) ExtractMin() (float32, error) {
 	if this.count == 0 {
-		return nil, errors.New("Empty Heap")
+		return 0, errors.New("Empty Heap")
 	}
 	value := this.data[this.indexes[0]]
 	this.swapIndex(0, this.count-1)
@@ -75,7 +75,7 @@ func (this *IndexMinHeap) ExtractMin() (*Edge, error) {
 	return value, nil
 }
 
-func (this *IndexMinHeap) ExtractMinIndex() (int, error) {
+func (this *IndexMinHeapF) ExtractMinIndex() (int, error) {
 	if this.count == 0 {
 		return 0, errors.New("Empty Heap")
 	}
@@ -87,15 +87,15 @@ func (this *IndexMinHeap) ExtractMinIndex() (int, error) {
 	return maxIndex, nil
 }
 
-func (this *IndexMinHeap) GetMin() (*Edge, error) {
+func (this *IndexMinHeapF) GetMin() (float32, error) {
 	if this.count == 0 {
-		return nil, errors.New("Empty Heap")
+		return 0, errors.New("Empty Heap")
 	}
 	value := this.data[this.indexes[0]]
 	return value, nil
 }
 
-func (this *IndexMinHeap) GetMinIndex() (int, error) {
+func (this *IndexMinHeapF) GetMinIndex() (int, error) {
 	if this.count == 0 {
 		return 0, errors.New("Empty Heap")
 	}
@@ -103,14 +103,14 @@ func (this *IndexMinHeap) GetMinIndex() (int, error) {
 	return value, nil
 }
 
-func (this *IndexMinHeap) GetItem(index int) (*Edge, error) {
+func (this *IndexMinHeapF) GetItem(index int) (float32, error) {
 	if !this.contains(index) {
-		return nil, errors.New("Invalid index")
+		return 0, errors.New("Invalid index")
 	}
-	return this.data[index], nil
+	return this.data[this.indexes[index]], nil
 }
 
-func (this *IndexMinHeap) Change(index int, value *Edge) error {
+func (this *IndexMinHeapF) Change(index int, value float32) error {
 	if !this.contains(index) {
 		return errors.New("Invalid index")
 	}
@@ -130,23 +130,23 @@ func (this *IndexMinHeap) Change(index int, value *Edge) error {
 	return nil
 }
 
-func (this *IndexMinHeap) parent(i int) int {
+func (this *IndexMinHeapF) parent(i int) int {
 	return (i-1) / 2
 }
 
-func (this *IndexMinHeap) left(i int) int {
+func (this *IndexMinHeapF) left(i int) int {
 	return i * 2 + 1
 }
 
-func (this *IndexMinHeap) right(i int) int {
+func (this *IndexMinHeapF) right(i int) int {
 	return i * 2 + 2
 }
 
-func (this *IndexMinHeap) shiftUp(index int) {
+func (this *IndexMinHeapF) shiftUp(index int) {
 	for ; index > 0; {
 		pIndex := this.parent(index) 
 		// 比较是 indexes 中指向的数据的值
-		if this.data[this.indexes[index]].Weight() < this.data[this.indexes[pIndex]].Weight() {
+		if this.data[this.indexes[index]] < this.data[this.indexes[pIndex]] {
 			this.swapIndex(index, pIndex)
 			index = pIndex
 		} else {
@@ -155,15 +155,15 @@ func (this *IndexMinHeap) shiftUp(index int) {
 	}
 }
 
-func (this *IndexMinHeap) shiftDown(index int) {
+func (this *IndexMinHeapF) shiftDown(index int) {
 	for ; this.left(index) < this.count; {
 		l := this.left(index)
 		j := l
-		if l+1 < this.count && this.data[this.indexes[l+1]].Weight() < this.data[this.indexes[l]].Weight() {
+		if l+1 < this.count && this.data[this.indexes[l+1]] < this.data[this.indexes[l]] {
 			j = l+1
 		}
 
-		if this.data[this.indexes[j]].Weight() < this.data[this.indexes[index]].Weight() {
+		if this.data[this.indexes[j]] < this.data[this.indexes[index]] {
 			this.swapIndex(j, index)
 			index = j
 		} else {
@@ -172,7 +172,7 @@ func (this *IndexMinHeap) shiftDown(index int) {
 	}
 }
 
-func (this *IndexMinHeap) swapIndex(i, j int) {
+func (this *IndexMinHeapF) swapIndex(i, j int) {
 	temp := this.indexes[i]
 	this.indexes[i] = this.indexes[j]
 	this.indexes[j] = temp

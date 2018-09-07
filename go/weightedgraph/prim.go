@@ -65,8 +65,7 @@ func (this *Prim) visit(v int) {
 			// 到该顶点的横切边还没有发现，添加到堆中
 			if this.edgeTo[other] == nil {
 				this.edgeTo[other] = &vertexs[i]
-				this.indexHeap.Insert(v, &vertexs[i])
-
+				this.indexHeap.Insert(other, &vertexs[i])
 			} else if this.edgeTo[other].Weight() < vertexs[i].Weight() {
 				// 当前堆中有一条到该顶点的横切边，但是堆中横切边的权值就已经比现在发现的
 				// 这条边的权值低，因此改边不予入堆

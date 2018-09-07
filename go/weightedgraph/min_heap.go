@@ -56,7 +56,6 @@ func (this *MinHeap) RightChild(i int) int {
 
 func (this *MinHeap) Add(edge Edge) {
 	this.data.AddLast(edge)
-
 	this.siftUp()
 }
 

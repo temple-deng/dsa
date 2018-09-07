@@ -1,9 +1,9 @@
 class OptimizedBaseSize {
-  constructor(data) {
-    this.data = Array(data.length);
-    this.size = Array(data.length);
+  constructor(size) {
+    this.data = Array(size);
+    this.size = Array(size);
 
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < size; i++) {
       this.data[i] = i;
       this.size[i] = 1;
     }

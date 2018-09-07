@@ -1,8 +1,8 @@
 class QuickFind {
-  constructor(data) {
-    this.data = Array(data.length);
+  constructor(size) {
+    this.data = Array(size);
 
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < size; i++) {
       this.data[i] = i;
     }
   }
