@@ -40,6 +40,49 @@ class Dijkstra {
       }
     }
   }
+
+  ShortestPathTo(w) {
+    if (w < 0 || w >= this.graph.V()) {
+      throw new Error("Invalid vertex");
+    }
+
+    if (this.HasPathTo(w)) {
+      return this.distTo[w]
+    }
+    return -1;
+  }
+
+  HasPathTo(w) {
+    if (w < 0 || w >= this.graph.V()) {
+      throw new Error("Invalid vertex");
+    }
+
+    return this.marked[w];
+  }
+
+  ShortestPath(w) {
+    if (!this.HasPathTo(w)) {
+      throw new Error("Unreachable vertext");
+    }
+
+    const result = [];
+    for (let e = this.from[w]; e !== null; e = this.from[e.V()]) {
+      result.unshift(e);
+    }
+
+    return result;
+  }
+
+  ShowPath(w) {
+    if (this.HasPathTo(w)) {
+      let str = "";
+      const paths = this.ShortestPath(w);
+      for (let i = 0; i < paths.length; i++) {
+        str += "  " + paths[i].V() + " -> " + paths[i].W();
+      }
+      console.log(str);
+    }
+  }
 }
 
 module.exports = Dijkstra;
