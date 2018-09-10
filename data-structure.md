@@ -753,8 +753,6 @@ LazyPrim 的时间复杂度是 O(ElogE) 级别的，而正常的 Prim 算法是 
 
 Kruskal 是 O(ElogE)。    
 
-
-
 ## Dijkstra 算法
 
 Dijkstra 单源最短路径算法的前提是：图中不能有负权的边。复杂度 O(ElogV)。   
