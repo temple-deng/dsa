@@ -465,8 +465,152 @@ function maxSum(arr) {
 
 ## 数组的问题
 
+数组的问题可能经常要用到，双指针，对撞指针，以及在可能的情况下使用 map 保存额外数据。同时如果
+数组是有序的，要尽可能利用这个有序的条件，例如是否可以使用二分搜索等等。    
+
+综合来看，快排中的双路快排、三路快排中 partition 使用的多指针方法是非常重要的，一定要掌握。    
+
+### 例题
+
+#### 283.移动零
+
+给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。   
+
+输入：[0, 1, 0, 3, 12]    
+输出：[1, 3, 12, 0, 0]     
+
+要求：不能使用额外的数组     
+
+```go
+func moveZeroes(nums []int)  {
+	n := len(nums)
+	k := 0
+	for i := 0; i < n; i++ {
+		if nums[i] != 0 {
+			if k != i {
+				nums[k] = nums[i]
+				nums[i] = 0
+			}
+			k++
+		}
+	}
+}
+```   
+
+利用了单路快排中的 partition 原理，前面的两部分一部分放处理好的部分，一部分放置可以交换的元素，
+末尾的一部分是待处理的部分。    
+
+#### 75.颜色分类
+
+给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。    
+
+此题中，我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。    
+
+输入：[2, 0, 2, 1, 1, 0]    
+输出：[0, 0, 1, ,1, 2, 2]    
+
+```go
+func sortColors(nums []int) {
+	n := len(nums)
+
+	l := 0
+	r := n
+
+	for i := 0; i < r; {
+		switch nums[i] {
+		case 0:
+			nums[l], nums[i] = nums[i], nums[l]
+			i++
+			l++
+		case 1:
+			i++
+		case 2:
+			r--
+			nums[r], nums[i] = nums[i], nums[r]
+		}
+	}
+}
+```    
+
+利用三路快排中的 partition 的思路，将整个数组分成了四部分。    
 
 
+#### 67.两数之和II - 有序数组
 
+给定一个已按照升序排列 的有序数组，找到两个数使得它们相加之和等于目标数。   
 
+函数应该返回这两个下标值 index1 和 index2，其中 index1 必须小于 index2。   
 
+返回的下标值（index1 和 index2）不是从零开始的。   
+
+输入：numbers = [2, 7, 11, 15], target = 9    
+输出：[1, 2]     
+
+```go
+func twoSum1(numbers []int, target int) []int {
+	n := len(numbers)
+	l := 0
+	r := n-1
+
+	for ; l < r; {
+		sum := numbers[l] + numbers[r]
+		if sum < target {
+			l++
+		} else if sum > target {
+			r--
+		} else {
+			return []int{l+1, r+1}
+		}
+	}
+	return nil
+}
+```    
+
+双路对撞指针的方案。当然其实也可以使用 map 的方案，相反是更简单的。    
+
+#### 209.长度最小的子数组
+
+给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s 的长度最小的连续子数组。
+如果不存在符合条件的连续子数组，返回 0。    
+
+输入：s = 7, nums = [2, 3, 1, 2, 4, 3]    
+输出：2    
+
+```go
+func minSubArrayLen(s int, nums []int) int {
+	n := len(nums)
+	result := n+1
+	sum := 0
+	l, r := 0, -1
+
+	for ; l < n; {
+		if r+1 < n && sum < s {
+			r++
+			sum += nums[r]
+		} else {
+			sum -= nums[l]
+			l++
+		}
+
+		if sum >= s {
+			result = int(math.Min(float64(result), float64(r-l+1)))
+		}
+	}
+
+	if result == n+1 {
+		result = 0
+	}
+	return result
+}
+```    
+
+滑动窗口的思路。    
+
+## 查找问题
+
+两类查找问题：   
+
++ 查找有无
+	- 元素 'a' 是否存在？set 集合
++ 查找对应关系（键值对应）
+	- 元素 'a' 出现了几次？map 字典
