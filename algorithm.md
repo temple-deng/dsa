@@ -613,4 +613,83 @@ func minSubArrayLen(s int, nums []int) int {
 + 查找有无
 	- 元素 'a' 是否存在？set 集合
 + 查找对应关系（键值对应）
-	- 元素 'a' 出现了几次？map 字典
+	- 元素 'a' 出现了几次？map 字典    
+
+要灵活的运用查找表。一定要确定我们要在查找表中查找什么。   
+
+针对一个输入为 500 左右的问题，题目的复杂度很可能是一个 O(n^2) 级别的算法。    
+
+### 例题
+
+#### 454-四数相加
+
+给定四个包含整数的数组列表 A, B, C, D 计算有多少个元组 (i, j, k, l) ，使得 A[i] + B[j] +
+C[k] + D[l] = 0。为了使问题简单化，所有的 A, B, C, D 具有相同的长度 N，且 0 ≤ N ≤ 500 。    
+
+500 的输入规模，基本上是一个 O(n^2) 的输入规模。    
+
+先建立一张查找表，存放 C, D 两个元祖中所有能生成的和，及其出现次数，然后再用一次两次循环
+寻找和为 0 的次数。    
+
+```go
+	n := len(A)
+
+	cdMap := make(map[int]int)
+	count := 0
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			sum := C[i] + D[j]
+			cdMap[sum]++
+		}
+	}
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			complement := -A[i]-B[j]
+			if c, ok := cdMap[complement]; ok {
+				count += c
+			}
+		}
+	}
+
+	return count
+```   
+
+#### 447.回旋镖的数量
+
+```go
+func numberOfBoomerangs(points [][]int) int {
+	// 然而这里外层没必要用 map
+	// 用一个数组即可
+	// auxMap := make(map[int](map[int]int))
+	n := len(points)
+	result := 0
+
+	for i := 0; i < n; i++ {
+		x := points[i]
+		auxMap := make(map[int]int)
+		for j := 0; j < n; j++ {
+			if i != j {
+				y := points[j]
+				xD := x[0] - y[0]
+				yD := x[1] - y[1]
+				dist := xD * xD + yD * yD
+				// 注意这里其实存放的是距离的平方
+				auxMap[dist]++
+			}
+		}
+		for _, count := range auxMap {
+			if count >= 2 {
+				result += count * (count-1)
+			}
+		}
+	}
+
+
+	return result
+}
+```   
+
+
+
