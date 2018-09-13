@@ -1,0 +1,52 @@
+package main
+
+import(
+	"fmt"
+)
+/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+
+type ListNode struct {
+	Val int
+	Next *ListNode
+}
+
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+
+}
+
+func CreateList(arr []int) *ListNode {
+	if len(arr) == 0 {
+		return nil
+	}
+
+	head := &ListNode{Val: arr[0]}
+	cur := head
+	for i := 1; i < len(arr); i++ {
+		cur.Next = &ListNode{Val: arr[i]}
+		cur = cur.Next
+	}
+
+	return head
+}
+
+func PrintList(head *ListNode) {
+	for cur := head; cur != nil; cur = cur.Next {
+		fmt.Printf("%d -> ", cur.Val)
+	}
+}
+
+func main() {
+	arr := []int{1,2,3,4, 5}
+
+	list := CreateList(arr)
+	PrintList(list)
+	fmt.Println()
+	head := removeNthFromEnd(list, 2)
+	PrintList(head)
+}
