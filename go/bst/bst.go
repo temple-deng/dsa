@@ -207,7 +207,7 @@ func (this *BST) RemoveMin() (int, error) {
 
 func (this *BST) removeMin(root *Node) *Node {
 	if root.left != nil {
-		root.left = this.removeMax(root.left)
+		root.left = this.removeMin(root.left)
 		return root
 	}
 
