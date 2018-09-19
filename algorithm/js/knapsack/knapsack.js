@@ -1,3 +1,9 @@
+/**
+ * 自顶向下的带有记忆功能的背包问题解决方案
+ * @param {*} w 
+ * @param {*} v 
+ * @param {*} W 
+ */
 function knapsack(w, v, W) {
   var n = w.length;
   var arr = Array(n+1);
@@ -15,15 +21,16 @@ function knapsack(w, v, W) {
   }
 
   (function knap(i, j) {
-    console.log(i);
     if (arr[i][j] !== undefined) {
       return arr[i][j];
     }
 
     if (j - w[i-1] < 0) {
-      return arr[i][j] = knap(i-1, j);
+      arr[i][j] = knap(i-1, j);
+      return arr[i][j];
     } else {
-      return arr[i][j] = Math.max(knap(i-1, j), knap(arr[i-1][j - w[i-1]]) + v[i-1]);
+      arr[i][j] = Math.max(knap(i-1, j), knap(i-1, j - w[i-1]) + v[i-1]);
+      return arr[i][j];
     }
   })(n, W);
 
