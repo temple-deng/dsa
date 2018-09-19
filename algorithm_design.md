@@ -719,6 +719,38 @@ F(i, j) = max{F(i-1, j), vi + F(i-1, j-wi)},    j - wi &gt;=0
 
 我们的目标是求 F(n, W).     
 
+```js
+// 自底向上的求解方案
+function knapsack(w, v, W) {
+  const n = w.length;
+  var arr = Array(n+1);
+
+  // 建立一个 n+1 * W+1 的矩阵
+  for (let i = 0; i <= n; i++) {
+    arr[i] = Array(W + 1);
+  }
+
+  for (let i = 0; i <= W; i++) {
+    arr[0][i] = 0;
+  }
+
+  for (let i = 0; i <= n; i++) {
+    arr[i][0] = 0;
+  }
+
+  for (let j = 1; j <= W; j++) {
+    for (let i = 1; i <= n; i++) {
+      if (j - w[i-1] < 0) {
+        arr[i][j] = arr[i-1][j];
+      } else {
+        arr[i][j] = Math.max(arr[i-1][j], arr[i-1][j-w[i-1]] + v[i-1]);
+      }
+    }
+  }
+  return arr[n][W];
+}
+```   
+
 ### 8.2.2 记忆化
 
 动态规划方法所涉及问题的解，满足一个用交叠的子问题来表示的递推关系。直接自顶向下对这样一个递推

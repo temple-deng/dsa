@@ -691,5 +691,163 @@ func numberOfBoomerangs(points [][]int) int {
 }
 ```   
 
+## 递归和回溯法
+
+回溯法针对的（简单）问题一般都是给一些元素，然后对这些元素进行一定的操作（排列（Permutation
+/取子集(Subsets, Combination Sum)/分割（Palindrome Partitioning）），来达到某个特定条件。    
+
+回溯法的基本思想是按照输入数组的顺序，每一层递归处理一个元素，当处理到最后一层的时候，也就
+是把数组中的所有元素都处理完的时候，把当前结果加入到最后的返回结果中。值得注意的是，每次在
+递归到下一层之前，我们加入了某个要处理的元素X，在下一层递归返回之后，我们要把之前加入的
+元素X从当前结果中取出来。如果我们不把元素X取出来，那么在下一次循环中，我们还会加入新的
+元素Y。那么在这一层递归中就相当于处理了不止一个新元素。    
+
+但是个人觉得这个元素 X 要不要取回，还是取决于元素是否是可重复使用的。   
+
+回溯法的应用：   
+
++ 排列问题
++ 组合问题
 
 
+### 例题
+
+#### 17-字母排列
+
+给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合：    
+
+```js
+var map = {
+  2: 'abc',
+  3: 'def',
+  4: 'ghi',
+  5: 'jkl',
+  6: 'mno',
+  7: 'pqrs',
+  8: 'tuv',
+  9: 'wxyz'
+};
+
+var letterCombinations = function (digits) {
+  if (!digits) {
+    return [];
+  }
+  var result = [];
+  (function letter(digits, index, prefix) {
+    if (index === digits.length - 1) {
+      let char = digits[index];
+      for (let i = 0; i < map[char].length; i++) {
+        result.push(prefix + map[char][i]);
+      }
+    } else {
+      let char = digits[index];
+      for (let i = 0; i < map[char].length; i++) {
+        letter(digits, index+1, prefix+map[char][i]);
+      }
+    }
+  })(digits, 0, '');
+  return result;
+};
+```     
+
+#### 46-全排列
+
+给定一个没有重复数字的序列，返回其所有可能的全排列。    
+
+```
+														使用 [1,2,3]构造排列
+					/ 1                     | 2                          \ 3
+使用 [2,3] 构造排列           使用 [1,3] 构造排列							使用 [1,2] 构造排列
+ / 2       \ 3               / 1        \3                  / 1         \ 2		
+3           2								3            1							   2              1
+1,2,3     1,3,2           2,1,3        2,3,1             3,1,2          3,2,1
+```   
+
+
+```js
+var permute = function(nums) {
+  let result = [];
+  if (nums.length == 0) {
+    return result;
+  }
+
+  (function per(usedNums) {
+    let unusedNums = nums.filter(value => {
+      return usedNums.indexOf(value) === -1;
+    });
+
+    let len = unusedNums.length;
+    if (len === 1) {
+      result.push(usedNums.concat(unusedNums[0]));
+      return
+    }
+
+    for (let i = 0; i < len; i++) {
+      per(usedNums.concat(unusedNums[i]));
+    }
+  })([])
+
+  return result;
+};
+```
+
+第二种解法：    
+
+```js
+function permute2(nums) {
+  var result = [];
+  if (nums.length == 0) {
+    return result;
+  }
+
+  let used = [];
+  for (let i = 0; i < nums.length; i++) {
+    used.push(false);
+  }
+
+  (function permutations(c) {
+    if (c.length === nums.length) {
+      result.push(c.slice());
+      return;
+    }
+
+    for (let i = 0; i < nums.length; i++) {
+      if (!used[i]) {
+        c.push(nums[i]);
+        used[i] = true;
+        permutations(c);
+        used[i] = false;
+        c.pop();
+      }
+    }
+  })([])
+
+  return result;
+}
+```    
+
+#### 77-组合
+
+给定两个整数 n 和 k，返回 1 ... n 中所有可能的 k 个数的组合。   
+
+```js
+function combine2(n, k) {
+  var res = [];
+  if (n === 0 || k === 0 || n < k) {
+    return res;
+  }
+
+  (function combination(n, k, start, c) {
+    if (c.length === k) {
+      res.push(c);
+      return;
+    }
+
+    for (let i = start; i <= n; i++) {
+      c.push(i);
+      combination(n, k, i+1, c);
+      c.pop();
+    }
+  })(n, k, 1, [])
+}
+```
