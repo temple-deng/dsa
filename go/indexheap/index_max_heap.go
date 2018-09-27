@@ -35,8 +35,8 @@ func (this *IndexMaxHeap) IsEmpty() bool {
 }
 
 func (this *IndexMaxHeap) Insert(index, value int) error {
-	// 满容量或者索引超出
-	if this.count == this.capacity || index >= this.capacity || index < 0 {
+	// 满容量
+	if this.count == this.capacity {
 		return errors.New("Error: No availablle space or index out of range")
 	}
 
