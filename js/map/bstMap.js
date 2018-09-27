@@ -163,9 +163,8 @@ class BSTMap {
     }
 
     const successor = this.minimumNode(root.right);
-    successor.right = root.right;
+    successor.right = this.removeMinNode(root.right);
     successor.left = root.left;
-    this.removeMinNode(root.right);
     root.left = root.right = null;
     // 注意这里 size 不需要 --,因为在 removeMinNode 中已经减过了
     return successor;

@@ -225,9 +225,8 @@ class BST {
     }
 
     const successor = this.minimumNode(root.right);
-    successor.right = root.right;
+    successor.right = this.removeMinNode(root.right);
     successor.left = root.left;
-    this.removeMinNode(root.right);
     root.left = root.right = null;
     this.size--;
     return successor;

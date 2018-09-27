@@ -225,8 +225,6 @@ func (this *BST) Remove(value int) error {
 }
 
 func (this *BST) remove(root *Node, value int) *Node {
-	// 个人感觉这个条件是取不到的，因为我们在 remove 前已经判定了节点一定要树中
-	// 所以可能不会递归到空节点还没找到
 	if root == nil {
 		return nil
 	}
@@ -257,11 +255,9 @@ func (this *BST) remove(root *Node, value int) *Node {
 
 	successor := this.minimum(root.right)
 	successor.left = root.left
-	successor.right = root.right
-	this.removeMin(root.right)
+	successor.right = 	this.removeMin(root.right)
 	root.left = nil
 	root.right = nil
-	this.size--
 	return successor
 }
 
