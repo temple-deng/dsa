@@ -1176,3 +1176,33 @@ leaq 指令不改变任何条件码，因为它是用来进行地址计算的。
 溢出和零标志，但是不会改变进位标志。    
 
 除此之外，还有两类指令，它们只设置条件码而不改变任何其他寄存器。如图所示，CMP 指令根据
+两个操作数之差来设置条件码。除了只设置条件码而不更新目的寄存器之外，CMP 指令与 SUB 指令
+的行为是一样的。TEST 指令的行为与 AND 指令一样，除了它们只设置条件码而不改变目的寄存器
+的值。   
+
+![cmp-test](https://raw.githubusercontent.com/temple-deng/markdown-images/master/computer-system/cmp-test.png)    
+
+### 3.6.2 访问条件码
+
+条件码通常不会直接读取，常用的使用方法有三种：1)可以根据条件码的某种组合，将一个字节设置
+为 0 或者 1, 2)可以条件跳转到程序的某个其他的部分，3)可以有条件地传送数据。对于第一种
+情况，下图描述的指令根据条件码的某种组合，将一个字节设置为 0 或者 1。我们将这一整类指令
+称为 **SET** 指令；它们之间的区别在于它们考虑的条件码的组合是什么，这些指令名字的不同后缀
+指明了它们所考虑的条件码的组合。例如，指令 setl 和 setb 表示“小于时设置(set less)” 和
+“低于时设置(set below)”。    
+
+![set-instructions](https://raw.githubusercontent.com/temple-deng/markdown-images/master/computer-system/set-instructions.png)    
+
+
+一条 SET 指令的目的操作数是低位单字节寄存器元素之一，或者一个字节的内存之一，指令会将这个
+字节设置成 0 或者 1。为了得到一个 32 位或 64 位结果，我们必须对高位清零。    
+
+一个计算 C 语言表达式 a &lt; b 的典型指令序列如下所示：    
+
+```asm
+// int comp(data_t a, data_t b)
+// a in %rdi, b in %rsi
+comp:
+  cmpq  %rsi, %rdi   // Compare a:b
+  setl  %al          // Set low-order byte if %eax to 0 or 1
+  
