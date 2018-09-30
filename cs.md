@@ -1205,4 +1205,472 @@ leaq 指令不改变任何条件码，因为它是用来进行地址计算的。
 comp:
   cmpq  %rsi, %rdi   // Compare a:b
   setl  %al          // Set low-order byte if %eax to 0 or 1
-  
+  movzbl %al, %eax   // Clear rest of %eax (and rest of %rax)
+  ret
+```    
+
+书上说，movzbl 指令不仅会把 %eax 的高 3 个字节清零，还会把整个寄存器 %rax 的高 4 个
+字节清零。是这样的吗？得回过去看看。    
+
+虽然所有的算术和逻辑操作都会设置条件码，但是各个 SET 命令的描述都适用的情况是：执行比较
+指令，根据计算 t = a-b 设置条件码。    
+
+### 3.6.3 跳转指令
+
+**跳转**(jump) 指令会导致执行切换到程序中一个全新的位置。在汇编代码中，这些跳转的目的地
+通常用一个 **标号**(label)指明。    
+
+```asm
+movq   $0, %rax       // Set %rax to 0
+jmp    .L1            // Goto .L1
+movq   (%rax), %rdx   // Null pointer dereference (skipped)
+.L1:
+  popq  %rdx         // jump target
+```    
+
+指令 jmp .L1 会导致程序跳过 movq 指令，而从 popq 指令开始继续执行。在产生目标代码文件时，
+汇编器会确定所有带标号指令的地址，并将 **跳转目标**（目的指令的地址）编码为跳转指令的一部分。    
+
+图 3-15 列举了不同的同转指令，jmp 是无条件跳转，它可以是直接跳转，即跳转目标是作为指令的
+一部分编码的；也可以是间接跳转，即跳转目标是从寄存器或内存位置中读出的。汇编语言中，直接
+跳转是给出一个标号作为跳转目标的，间接跳转的写法是 '*' 后面跟一个操作数指示符，例如
+jmp *%rax, 或者 jmp *(%rax)。    
+
+![jmp-instructions](https://raw.githubusercontent.com/temple-deng/markdown-images/master/computer-system/jmp-instructions.png)    
+
+表中所示的其他跳转指令都是有条件的——它们根据条件码的某种组合，或者跳转，或者继续执行代码
+序列中下一条指令。条件跳转只能是直接跳转。     
+
+### 3.6.4 跳转指令的编码
+
+跳转指令有几种不同的编码，但最常用的都是 PC 相对的（PC-relative）。也就是，它们会将目标
+指令的地址与紧跟在跳转指令后面那条指令的地址之间的差作为编码。这些地址偏移量可以编码为 1,2
+或 4 个字节。第二种编码方式是给出“绝对”地址，用 4 个字节直接指定目标。汇编器和链接器会选择
+适当的跳转目的编码。    
+
+```asm
+movq        %rdi, %rax
+jmp         .L2
+.L3:
+  sarq      %rax
+.L2:
+  testq     %rax, %rax
+  jg        .L3
+  req; ret
+```    
+
+汇编器产生的 .o 格式的反汇编版本如下：   
+
+```
+0:    48 89 f8            mov    %rdi, %rax
+3:    eb 03               jmp    8 <loop+0x8>
+5:    48 di f8            sar    %rax
+8:    48 85 c0            test   %rax, %rax
+b:    7f f8               jg     5 <loop+0x5>
+d:    f3 c3               reqz retq
+```    
+
+右边反汇编器产生的注释中，第 2 行中跳转指令的跳转目标指明为 0x8，第 5 行中跳转指令的跳转
+目标是 0x5。不过，观察指令的字节编码，会看到第一条跳转指令的目标编码为 0x03。把它加上 0x5,
+也就是下一条指令的地址，就得到跳转目标地址 0x8.    
+
+L类似，第二个跳转指令的目标用单字节、补码表示编码为0xf8。将这个数加上 0xd，就得到 0x5。    
+
+### 3.6.5 用条件控制来实现条件分支
+
+将条件表达式和语句从 C 语言翻译成机器代码，最常用的方式是结合有条件和无条件跳转。    
+
+```c
+long lt_cnt = 0;
+long ge_cnt = 0;
+
+long absdiff_se(long x, long y)
+{
+  long result;
+  if ( x < y) {
+    lt_cnt++;
+    result = x - y;
+  } else {
+    ge_cnt++;
+    result = x - y;
+  }
+  return result;
+}
+```    
+
+产生的汇编代码：    
+
+```asm
+// long absdiff_se(long x, long y)
+// x in %rdi, y in %rsi
+absdiff_se:
+  cmpq      %rsi, %rdi   // Compare x:y
+  jge       .L2          
+  addq      $1, lt_cnt(%rip)   // lt_cnt++
+  movq      $rsi, %rax
+  subq      %rdi, %rax       // result = y - x
+  ret                        // return
+.L2:
+  addq      $1, ge_cnt(%rip)    // ge_cnt++
+  movq      %rdi, %rax
+  subq      %rsi, %rax          // result = x - y
+  ret
+```    
+
+C 语言中的 if-else 语句的通用形式模板如下：   
+
+```
+if (test-expr)
+  then-statement
+else
+  else-statement
+```    
+
+对于这种通用形式，汇编实现通常会使用下面这种形式，这里，我们用 C 语法来描述控制流儿：   
+
+```
+t = test-expr
+if (!t)
+  goto false;
+  then statement
+  goto done;
+false:
+  else-statement
+done:
+```      
+
+### 3.6.6 用条件传送来实现条件分支
+
+实现条件操作的传统方法是通过使用控制的条件转移。当条件满足时，程序沿着一条执行路径执行，
+而当条件不满足时，就走另一条路径。这种机制简单而通用，但是在现在处理器上，它可能会非常
+低效。   
+
+一种替代的策略是使用数据的条件转移。这种方法计算一个条件操作的两种结果，然后再根据条件是否
+满足从中选取一个。只有在一些受限制的情况中，这种策略才可行，但是如果可行，就可以用一条简单
+的条件传送指令来实现它，条件传送指令更符合现代处理器的性能特性。    
+
+```c
+long absdiff(long x, long y) {
+  long result;
+  if (x < y) {
+    result = y - x;
+  } else {
+    result = x - y;
+  }
+  return result;
+}
+```    
+
+对应的汇编代码：    
+
+```asm
+// long absdiff(long x, long y)
+// x in %rdi, y in %rsi
+absdiff:
+  movq      %rsi, %rax
+  subq      %rdi, %rax    // rval = y - x
+  movq      %rdi, %rdx
+  subq      %rsi, %rdx    // eval = x - y
+  cmpq      %rsi, %rdi    // Compare  x:y
+  cmovge    %rdx, %rax    // If >=, rval = eval
+  ret
+```    
+
+为了理解为什么基于条件数据传送的代码会比基于条件控制转移的代码性能要好，我们必须了解一些
+关于现代处理器如何运行的知识。处理器通过使用 _流水线_ 来获得高性能，在流水线中，一条指令
+的处理要经过一系列的阶段，每个阶段执行所需操作的一小部分（例如，从内存中取指、确定指令类型、
+从内存读数据、执行算术运算、向内存写数据）。这种方法通过重叠连续指令的步骤来获得高性能，例如，
+在取一条指令的同时，执行它前面一条指令的算术运算。要做到这一点，要求能够事先确定要执行的指令
+序列，这样才能保持在流水线中充满了待执行的指令。当机器遇到条件跳转（也称为“分支”）时，只有
+当分支条件求值完成之后，才能决定分支往哪边走。处理器采用非常精密的 _分支预测逻辑_ 来猜测
+每条跳转指令是否会执行。只要它的猜测还比较可靠，指令流水线中就会充满着指令。另一方面，错误
+预测一个跳转，要求处理器丢掉它为该跳转指令后所有指令已做的工作，然后再开始用从正确位置处
+起始的指令去填充流水线。这样的一个错误预测会招致很严重的惩罚，浪费大约 15~30 个时钟周期。    
+
+另一方面，无论测试的数据是什么，编译出来使用条件传送的代码所需的时间都是大约 8 个时钟周期。   
+
+图 3-18 列举了 x86-64 上一些可用的条件传送指令，每条指令都有两个操作数：源寄存器或者内存
+地址 S, 和目的寄存器 R。与不同的 SET 和跳转指令一样，这些指令的结果取决于条件码的值。源值
+可以从内存或者源寄存器中读取，但是只有在指定的条件满足时，才会被复制到目的寄存器中。    
+
+源和目的的值可以是 16 位，32位或 64 位长，不支持单字节的条件传送。汇编器可以从目的寄存器
+的名字推断出条件传送指令的操作数长度，所以对所以操作数长度，都可以使用同一个指令名字。   
+
+![cmov-instructions](https://raw.githubusercontent.com/temple-deng/markdown-images/master/computer-system/cmov-instructions.png)    
+
+### 3.6.7 循环
+
+C 语言提供了多种循环结构，即 do-while, while 和 for。汇编中没有相应的指令存在，可以用
+条件测试和跳转组合来实现循环的效果。GCC 和其他汇编器产生的循环代码主要基于两种基本的循环模式。    
+
+1. **do-while循环**     
+
+```c
+do
+  body-statement
+  while(test-expre);
+```    
+
+这种通用形式可以被翻译成如下所示的条件和 goto 语句：   
+
+```
+loop:
+  body-statement
+  t = test-expr;
+  if (t)
+    goto loop;
+```    
+
+```c
+long fact_do(long n) {
+  long result = 1;
+  do {
+    result *= n;
+    n = n-1;
+  } while(n > 1);
+  return result;
+}
+```    
+
+对应的汇编代码：    
+
+```asm
+// long fact_do(long n)
+// n in %rdi
+fact_do:
+  movl    $1, %eax    // Set result = 1
+.L2
+  imulq   %rdi, %rax
+  subq    $1, %rdi
+  cmpq    $1, %rdi
+  jg      .L2
+  req; ret
+```    
+
+2. **while循环**    
+
+while 语句的通用形式如下：   
+
+```c
+while (test-expr)
+  body-statement
+```    
+
+有很多种方法将 while 循环翻译成机器代码，GCC 在代码生成中使用其中的两种方法。    
+
+第一种翻译方法，我们称之为跳转到中间，它执行一个无条件跳转跳到循环结尾处的测试，以此来执行
+初始的测试。可以用以下模板来表达这种方法：    
+
+```
+  goto test;
+loop:
+  body-statement
+test:
+  t = test-expr
+    if (t)
+      goto loop;
+```    
+
+```c
+long fact_while(long n) {
+  long result = 1;
+  while( n > 1) {
+    result *= n;
+    n = n - 1;
+  }
+  return result;
+}
+```    
+
+对应的汇编代码如下：    
+
+```
+// long fact_while(long n)
+// n in %rdi
+fact_while:
+  movl    $1, %eax      // Set result = 1
+  jmp     .L5           // Goto test
+.L6:
+  imulq   %rdi, %rax
+  subq    $1, %rdi
+.L5:
+  cmpq    $1, %rdi
+  jg      .L6
+  req; ret
+```    
+
+第二种翻译方法，我们称之为 guarded-do，首先用条件分支，如果初始条件不成立就跳过循环，把
+代码转换为 do-while 循环。     
+
+```c
+long fact_while(long n) {
+  long result = 1;
+  while( n > 1) {
+    result *= n;
+    n = n - 1;
+  }
+  return result;
+}
+```   
+
+对应的汇编代码：   
+
+```
+// long fact_while(long n)
+// n in %rdi
+fact_while:
+  cmpq      $1, %rdi
+  jle       .L7             // If <=, goto done
+  movl      $1, %eax
+.L6:
+  imulq     %rdi, %rax
+  subq      $1, %rdi
+  cmpq      $1, %rdi
+  jne       .L6
+  req; ret
+.L7:
+  movl      $1, %eax
+  ret
+```    
+
+3. **for循环**     
+
+fGCC 为 for 循环产生的代码是 while 循环的两种翻译之一，这取决于优化的等级。    
+
+### 3.6.8 switch 语句
+
+```c
+void switch_eg(long x, long n, long *dest) {
+  long val = x;
+  switch (n) {
+    case 100:
+      val *= 13;
+      break;
+
+    case 102:
+      val += 10;
+      /* Fall through */
+
+    case 103:
+      val += 11;
+      break;
+
+    case 104:
+    case 106:
+      val *= val;
+      break;
+
+    default:
+      val = 0;
+  }
+  *dest = val;
+}
+```    
+
+原始的 C 代码有针对值 100，102-104 和 106 的情况，但是开关变量 n 可以是任意整数。编译器
+首先将 n 减去 100，把取值范围移到 0 和 6 之间，创建一个新的程序变量。补码表示的负数会
+映射无符号表示的大正数，利用这一事实，将这个程序变量看成无符号值。可以通过测试这个变量是否
+大于 6 判定其是否在 0~6 的范围之外。根据这个程序变量的值，有五个不同的跳转位置：.L3, .L5,
+.L6, .L7, .L8，最后一个是默认的目的地址。每个标号都标识一个实现某个情况分支的代码块。     
+
+```
+// void switch_eg(long x, long n, long *dest)
+// x in %rdi, n in %rsi, dest in %rdx
+switch_eg:
+  subq       $100, %rsi           // Compute index = n - 100
+  cmpq       $6, %rsi             // Compare index:6
+  ja         .L8                  // If >, goto loc_def
+  jmp        *.L4(, %rsi, 8)      // Goto *jt[index]
+.L3:
+  leaq       (%rdi, %rdi, 2), %rax  // 3*x
+  leaq       (%rdi, %rax, 4), %rdi  // val = 13 * x
+  jmp        .L2                    // Goto done
+.L5:
+  addq       $10, %rdi
+.L6:
+  addq       $11, %rdi
+  jmp        .L2
+.L7:
+  imulq      %rdi, %rdi
+  jmp        .L2
+.L8
+  movl       $0, %edi
+.L2:
+  movq       %rdi, (%rdx)
+  ret
+```    
+
+在汇编代码中，跳转表用以下声明表示，我们添加了一些注释：    
+
+```asm
+    .section      .rodata
+    .align 8       // Align address to multiple of 8
+  .L4
+    .quad     .L3    // Case 100
+    .quad     .L8    // Case 101
+    .quad     .L5    // Case 102
+    .quad     .L6    // Case 103
+    .quad     .L7    // Case 104
+    .quad     .L8    // Case 105
+    .quad     .L7    // Case 106
+```     
+
+## 3.7 过程
+
+要提供对过程的机器级支持，必须要处理许多不同的属性，为了讨论方便，假设过程 P 调用过程 Q，
+Q 执行后返回到 P。这些动作包括下面一个或多个机制：    
+
++ 传递控制。在进入过程 Q 的时候，程序计数器必须被设置为 Q 的代码的起始地址，然后在返回时，
+要把程序计数器设置为 P 中调用 Q 后面那条指令的地址。
++ 传递数据。P 必须能够向 Q 提供一个或多个参数，Q 必须能够向 P 返回一个值。
++ 分配和释放内存。在开始时，Q 可能需要为局部变量分配空间，而在返回前，由必须释放这些存储空间。
+
+### 3.7.1 运行时栈
+
+当 x86-64 过程需要的存储空间超出寄存器能够存放的大小时，就会在栈上分配空间。这个部分称为
+过程的 **栈帧**。    
+
+![stack](https://raw.githubusercontent.com/temple-deng/markdown-images/master/computer-system/stack.png)    
+
+当过程 P 调用过程 Q 时，会把返回地址压入栈中，指明当 Q 返回时，要从 P 程序的哪个位置继续
+执行。我们把这个返回地址当做 P 的栈帧的一部分，因为它存放的是与 P 相关的状态。Q 的代码会
+扩展当前栈的边界，分配它的栈帧所需的空间，在这个空间中，它可以保存寄存器的值，分配局部变量
+空间，为它调用的过程设置参数。通过寄存器，过程 P 可以传递最多 6 个整数值（也就是指针和整数），
+但是如果 Q 需要更多的参数，P 可以在调用 Q 之前在自己的栈帧中存储好这些参数。   
+
+为了提供空间和时间效率，x86-64 过程只分配自己所需要的栈帧部分，例如，许多过程有 6 个或者更少
+的参数，那么所有的参数都可以通过寄存器传递。因此，图 3-25 中画出的某些栈帧部分可以省略。实际
+上，许多函数甚至不需要栈帧，。当所有的局部变量都可以保存在寄存器中，而且该函数不会调用任何其他
+函数，就可以这样处理。例如，目前为止，我们仔细审视过的所有函数都不需要栈帧。    
+
+### 3.7.2 转移控制
+
+将控制从函数 P 转移到函数 Q 只需要简单地把程序计数器设置为 Q 的代码起始为止。不过，当稍后
+从 Q 返回的时候，处理器必须记录好它需要继续 P 的执行的代码位置。在 x86-64 机器中，这个信息
+是用指令 **call Q** 调用过程 Q 来记录的。该指令会把地址 A 压入栈中，并将 PC 设置为 Q 的
+起始地址。对应的指令 ret 会从栈中弹出地址 A，并把 PC 设置为 A。    
+
+
+指令 | 描述
+----------|---------
+ call Label | 过程调用
+ call *Operand | 过程调用
+ ret | 从过程调用中返回
+
+下面说明了 3.2.2 节中介绍的 multstore 和 main 函数的 call 和 ret 指令的执行情况：   
+
+```
+// Beginning of function multstore
+0000000000400540 <multstore>:
+    400540:  53           push  %rbx
+    400541:  48 89 d3     mov %rdx, %rbx
+    .....
+
+// Return from function multstore
+    40054d:  c3           retq
+....
+
+// Call to multstore from main
+    400563:  e8 d8 ff ff ff   callq  400540 <multstore>
+    400568:  48 8b 54 24 08   mov    0x8(%rsp), %rdx
+```
