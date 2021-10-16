@@ -48,8 +48,9 @@ function merge(nums1: number[], nums2: number[]): number[] {
     return ret;
 }
 
-export function mergeSort2(nums: number[]) {
+export function mergeSort2(nums: number[]): number[] {
     mergeSortR2(nums, 0, nums.length - 1);
+    return nums;
 }
 
 function mergeSortR2(nums: number[], left: number, right: number) {
@@ -59,7 +60,9 @@ function mergeSortR2(nums: number[], left: number, right: number) {
     const mid = left + Math.floor((right - left) / 2);
     mergeSortR2(nums, left, mid);
     mergeSortR2(nums, mid + 1, right);
-    merge2(nums, left, mid, right);
+    if (nums[mid] > nums[mid + 1]) {
+        merge2(nums, left, mid, right);
+    }
 }
 
 function merge2(nums: number[], left: number, mid: number, right: number) {
@@ -84,4 +87,61 @@ function merge2(nums: number[], left: number, mid: number, right: number) {
         }
         k++;
     }
+}
+
+export function mergeSort3(nums: number[]): number[] {
+    const temp = nums.slice();
+    mergeSortR3(nums, 0, nums.length, temp);
+    return nums;
+}
+
+function mergeSortR3(nums: number[], left: number, right: number, temp: number[]) {
+    if (left >= right) {
+        return;
+    }
+
+    const mid = left + Math.floor((right - left) / 2);
+    mergeSortR3(nums, left, mid, temp);
+    mergeSortR3(nums, mid + 1, right, temp);
+    if (nums[mid] > nums[mid + 1]) {
+        merge3(nums, left, mid, right, temp);
+    }
+}
+
+function merge3(nums: number[], left: number, mid: number, right: number, copy: number[]) {
+    for (let i = left; i <= right; i++) {
+        copy[i] = nums[i];
+    }
+    let i = left;
+    let j = mid + 1;
+    let k = i;
+
+    while (k <= right) {
+        if (i > mid) {
+            nums[k] = copy[j];
+            j++;
+        } else if (j > right) {
+            nums[k] = copy[i];
+            i++;
+        } else if (copy[i] <= copy[j]) {
+            nums[k] = copy[i];
+            i++
+        } else {
+            nums[k] = copy[j];
+            j++;
+        }
+        k++;
+    }
+}
+
+export function mergeSort4(nums: number[]): number[] {
+    const n = nums.length;
+    for (let size = 1; size < nums.length; size = size * 2) {
+        for (let i = 0; i + size < n; i += 2 * size) {
+            if (nums[i + size - 1] > nums[i + size]) {
+                merge2(nums, i, i + size - 1, Math.min(i + size + size - 1, n - 1));
+            }
+        }
+    }
+    return nums;
 }

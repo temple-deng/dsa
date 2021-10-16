@@ -3,7 +3,8 @@
  */
 import { selectionSort, selectionSort2 } from './selectionSort';
 import { insertSort, insertSort2 } from './insertSort';
-import { mergeSort } from './mergeSort';
+import { mergeSort, mergeSort2, mergeSort4 } from './mergeSort';
+import { quickSort, quickSort2, quickSort3 } from './quickSort';
 
 export class SortingHelper {
     static isSorted(nums: number[]): boolean {
@@ -39,6 +40,21 @@ export class SortingHelper {
                 break;
             case 'MergeSort':
                 arr = mergeSort(arr);
+                break;
+            case 'MergeSort2':
+                mergeSort2(arr);
+                break;
+            case 'MergeSort4':
+                mergeSort4(arr);
+                break;
+            case 'QuickSort':
+                quickSort(arr);
+                break;
+            case 'QuickSort2':
+                quickSort2(arr);
+                break;
+            case 'QuickSort3':
+                quickSort3(arr);
                 break;
         }
 

@@ -115,5 +115,19 @@ export default class LinkedList<T> {
     deleteLast() {
         return this.delete(this.size - 1);
     }
+
+    removeElement(e: T) {
+        let prev = this.dummyHead;
+        while (prev.next !== null) {
+            if (prev.next.e === e) {
+                const node = prev.next;
+                prev.next = node.next;
+                node.next = null;
+                this.size--;
+                return;
+            }
+            prev = prev.next;
+        }
+    }
 }
 

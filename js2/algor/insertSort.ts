@@ -9,7 +9,6 @@ export function insertSort(nums: number[]): number[] {
     // 外层循环，一次看一张未排序的牌
     for (let i = 1; i < nums.length; i++) {
         // 内层循环，往前找，找到正确位置
-        const cur = nums[i];
         for (let j = i - 1; j >= 0 && nums[j] > nums[j + 1]; j--) {
             SortingHelper.swap(nums, j, j + 1);
         }
