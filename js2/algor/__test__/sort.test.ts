@@ -43,11 +43,11 @@ test('quickSort2', () => {
     expect(SortingHelper.sortTest('QuickSort2', arr)).toBeTruthy();
 });
 
-test('quickSort3', () => {
-    const arr2 = [
-        6, 3, 8, 3, 5,
-        6, 8, 9, 6, 5
-    ];
-    console.log(arr2)
-    expect(SortingHelper.sortTest('QuickSort3', arr2)).toBeTruthy();
-});
+// test('quickSort3', () => {
+//     const arr2 = [
+//         6, 3, 8, 3, 5,
+//         6, 8, 9, 6, 5
+//     ];
+//     console.log(arr2)
+//     expect(SortingHelper.sortTest('QuickSort3', arr2)).toBeTruthy();
+// });

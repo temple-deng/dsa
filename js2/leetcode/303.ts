@@ -57,3 +57,44 @@ export class NumArray {
         return index * 2 + 2;
     }
 }
+
+/**
+ * sqrt 分解解法
+ */
+export class NumArray2 {
+    nums: number[];
+    sumArr: number[];
+    blockNum: number;
+
+    constructor(nums: number[]) {
+        this.nums = nums;
+        const sumArr = [];
+        const sqrt = Math.floor(Math.sqrt(nums.length));
+        const blockNum = Math.ceil(nums.length / sqrt);
+        this.blockNum = blockNum;
+        for (let i = 0; i < sqrt; i++) {
+            let sum = 0;
+            for (let j = i * blockNum; j < (i + 1) * blockNum && j < nums.length; j++) {
+                sum += nums[j];
+            }
+            sumArr.push(sum);
+        }
+        this.sumArr = sumArr;
+    }
+
+    sumRange(left: number, right: number): number {
+        const leftIndex = Math.ceil(left / this.blockNum) - 1;
+        const rightIndex = Math.ceil(right / this.blockNum) - 1;
+        // 可以分成几种情况，两者在一个分组中
+        // 两者不在一个分组中
+        // 我们先假设不在一个分组中，怎么求
+        // 先求左边所在分组所在值，同理右边
+        if (leftIndex === rightIndex) {
+            return this.nums.slice(left, right + 1).reduce((prev, cur) => prev + cur, 0);
+        } else {
+            const part1 = this.nums.slice(left, (leftIndex + 1) * this.blockNum).reduce((prev, cur) => prev + cur, 0);
+            const part2 = this.nums.slice(rightIndex * this.blockNum, right + 1).reduce((prev, cur) => prev + cur, 0);
+            return part1 + part2 + this.sumArr.slice(leftIndex + 1, rightIndex).reduce((prev, cur) => prev + cur, 0);
+        }
+    }
+}
