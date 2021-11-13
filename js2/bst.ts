@@ -215,9 +215,9 @@ export default class BST<T> {
                 this.size--;
                 return left;
             } else {
-                const successor = this.minimumSubtree(node);
-                successor.left = node.left;
+                const successor = this.minimumSubtree(node.right);
                 successor.right = this.removeMinSubtree(node.right);
+                successor.left = node.left;  // 这一这里必须放后面
                 node.left = node.right = null;
                 return successor;
             }
