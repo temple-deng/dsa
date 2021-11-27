@@ -66,8 +66,9 @@ function canPartition2(nums: number[]): boolean {
         res[i] = new Array(sum + 1);
         res[i][0] = nums[i] === 0;
     }
+    // 这里是之前写错的地方
     for (let j = 1; j < sum + 1; j++) {
-        res[0][j] = false;
+        res[0][j] = nums[0] === j;
     }
 
     for (let i = 1; i < nums.length; i++) {
