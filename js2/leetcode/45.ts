@@ -3,7 +3,7 @@
  * @link https://leetcode-cn.com/problems/jump-game-ii/
  */
 
-export function jump(nums: number[]): number {
+export function jump2(nums: number[]): number {
     // f(i) 代表到达当前位置花费的最小跳跃次数
     // 这个方法耗时有点长啊，那应该是要有剪枝操作？
 
@@ -22,3 +22,4 @@ export function jump(nums: number[]): number {
 
     return memo[nums.length - 1];
 };
+

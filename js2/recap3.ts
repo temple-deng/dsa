@@ -127,7 +127,7 @@ export class BST<E> {
     levelOrder() {
         const queue = [this.root];
         while (queue.length) {
-            const top = queue.pop()!;
+            const top = queue.shift()!;
             if (top !== null) {
                 if (top.left !== null) {
                     queue.push(top.left);
