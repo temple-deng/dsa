@@ -26,20 +26,23 @@ class ListNode {
 
 // 这个题使用 3 指针其实是比较好想的，难点是节点更新的顺序，从左向右依次更新
 export function reverseList(head: ListNode | null): ListNode | null {
-    if (head === null) {
+    if (head === null || head.next === null) {
         return head;
     }
 
-    let prev = null;
-    let cur = head;
-    let next = cur.next;
-    while (next !== null) {
+    let prev = head;
+    let cur = head.next;
+
+    while (cur !== null) {
+        let next = cur.next;
         cur.next = prev;
+        if (prev === head) {
+            prev.next = null;
+        }
         prev = cur;
-        cur = next;
-        next = next.next;
+        cur = next!;
     }
-    cur.next = prev;
-    return cur;
+
+    return prev;
 };
 

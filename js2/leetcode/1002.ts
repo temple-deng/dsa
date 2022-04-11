@@ -28,3 +28,40 @@ function commonChars(words: string[]): string[] {
     }
     return ret;
 };
+
+function commonChars2(words: string[]): string[] {
+    let map = new Map<string, number>();
+        const firstWord = words[0];
+        for (const char of firstWord) {
+            if (map.has(char)) {
+                map.set(char, map.get(char) + 1);
+            } else {
+                map.set(char, 1);
+            }
+        }
+    
+        for (let i = 1; i < words.length; i++) {
+            const insectMap = new Map();
+            const w = words[i];
+            for (const char of w) {
+                if (map.has(char)) {
+                    if (insectMap.has(char)) {
+                        insectMap.set(char, insectMap.get(char) + 1);
+                    } else {
+                        insectMap.set(char, 1);
+                    }
+                    map.set(char, map.get(char) - 1);
+                    if (map.get(char) === 0) {
+                        map.delete(char);
+                    }
+                }
+            }
+            map = insectMap;
+        }
+        const arr = [];
+        for (const [key, value] of map.entries()) {
+            let str = key.repeat(value);
+            arr.push(...str);
+        }
+        return arr;
+};

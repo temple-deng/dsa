@@ -48,3 +48,36 @@ function rotate(nums: number[], k: number): void {
         nums[i] = first[i];
     }
 };
+
+function sortedSquares2(nums: number[]): number[] {
+    let n = nums.length;
+
+    let i = 0;
+    while (i < n && nums[i] < 0) {
+        i++;
+    }
+
+    if (i === 0) {
+        return nums.map(n => n * n);
+    } else {
+        let l = i - 1;
+        let r = i;
+        const ret = [];
+        while (l >= 0 || r < n) {
+            if (l < 0) {
+                ret.push(nums[r] * nums[r]);
+                r++;
+            } else if (r >= n) {
+                ret.push(nums[l] * nums[l]);
+                l--;
+            } else if (Math.abs(nums[l]) <= Math.abs(nums[r])) {
+                ret.push(nums[l] * nums[l]);
+                l--;
+            } else {
+                ret.push(nums[r] * nums[r]);
+                r++;
+            }
+        }
+        return ret;
+    }
+};

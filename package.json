@@ -4,6 +4,8 @@
   "description": "data structure algorithm",
   "main": "index.js",
   "scripts": {
+    "prepublish": "node test.js",
+    "prepare": "node test.js",
     "test": "jest",
     "build": "node scripts/esbuild"
   },

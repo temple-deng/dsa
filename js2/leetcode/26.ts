@@ -18,3 +18,15 @@ function removeDuplicates(nums: number[]): number {
     }
     return nums.length - delNum;
 };
+
+function removeDuplicates2(nums: number[]): number {
+    let end = 0;
+    for (let i = 1; i < nums.length; i++) {
+        if (nums[end] !== nums[i]) {
+            end++;
+            nums[end] = nums[i];
+        }
+    }
+
+    return end + 1;
+};

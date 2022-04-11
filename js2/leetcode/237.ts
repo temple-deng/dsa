@@ -32,3 +32,10 @@ export function deleteNode(root: ListNode | null): void {
         }
     }
 };
+
+function deleteNode2(root: ListNode): void {
+    const next = root.next!;
+    root.val = next.val;
+    root.next = next.next;
+    next.next = null;
+};

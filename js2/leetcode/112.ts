@@ -30,3 +30,14 @@ export function hasPathSum(root: TreeNode | null, targetSum: number): boolean {
         return hasPathSum(root.left, left) || hasPathSum (root.right, left);
     }
 };
+
+
+function hasPathSum2(root: TreeNode | null, targetSum: number): boolean {
+    if (root === null) {
+        return false;
+    }
+    if (!root.left && !root.right) {
+        return targetSum === root.val;
+    }
+    return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val);
+};
